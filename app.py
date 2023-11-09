@@ -49,4 +49,4 @@ def user_lookup_callback(jwt_header, jwt_data):
 
 
 if __name__ == "__main__":
-    return "<h1>SALUT</h1>"
+    app.run()
