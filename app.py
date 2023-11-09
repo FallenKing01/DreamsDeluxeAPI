@@ -8,6 +8,7 @@ from extensions import api, db, jwt
 
 from namespaces.userController import nsUser
 from namespaces.tablesController import nsTables
+from namespaces.productsController import nsProducts
 
 app = Flask(__name__)
 
@@ -19,6 +20,7 @@ collection = db["user"]
 api.init_app(app)
 api.add_namespace(nsUser)
 api.add_namespace(nsTables)
+api.add_namespace(nsProducts)
 mongo = PyMongo(app)
 jwt = JWTManager(app)
 
