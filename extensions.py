@@ -4,7 +4,6 @@ from flask_restx import Api
 from pymongo import MongoClient
 
 api = Api()
-db = SQLAlchemy()
 jwt = JWTManager()
 
 authorizations = {
