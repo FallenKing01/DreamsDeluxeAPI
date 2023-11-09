@@ -1,7 +1,6 @@
 from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 from flask_restx import Api
-from flask_sqlalchemy import SQLAlchemy
 from pymongo import MongoClient
 
 api = Api()
