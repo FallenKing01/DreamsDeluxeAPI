@@ -7,8 +7,7 @@ import os
 from extensions import api, db, jwt  
 
 from namespaces.userController import nsUser
-
-
+from namespaces.tablesController import nsTables
 
 app = Flask(__name__)
 
@@ -17,18 +16,9 @@ app.config["JWT_SECRET_KEY"] = "cookiemonster"
 
 collection = db["user"]
 
-
 api.init_app(app)
-
-
-
 api.add_namespace(nsUser)
-
-
-
-
-print(app.config["MONGO_URI"])
-
+api.add_namespace(nsTables)
 mongo = PyMongo(app)
 jwt = JWTManager(app)
 
