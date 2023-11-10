@@ -10,6 +10,8 @@ from namespaces.userController import nsUser
 from namespaces.tablesController import nsTables
 from namespaces.productsController import nsProducts
 from namespaces.loginController import nsLogin
+from namespaces.employerController import nsEmployer
+
 app = Flask(__name__)
 
 app.config["MONGO_URI"] = "mongodb+srv://Andrei:LsrbFqf9rk1fFZX5@dreamsdeluxe.x3fgxne.mongodb.net/?retryWrites=true&w=majority"
@@ -19,9 +21,11 @@ collection = db["user"]
 
 api.init_app(app)
 api.add_namespace(nsUser)
+api.add_namespace(nsLogin)
 api.add_namespace(nsTables)
 api.add_namespace(nsProducts)
-api.add_namespace(nsLogin)
+api.add_namespace(nsEmployer)
+
 mongo = PyMongo(app)
 jwt = JWTManager(app)
 
