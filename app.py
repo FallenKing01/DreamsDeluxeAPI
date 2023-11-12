@@ -3,7 +3,7 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 import os
-
+from flask_cors import CORS 
 from extensions import api, db, jwt  
 
 from namespaces.userController import nsUser
@@ -13,6 +13,7 @@ from namespaces.loginController import nsLogin
 from namespaces.employerController import nsEmployer
 
 app = Flask(__name__)
+CORS(app)
 
 app.config["MONGO_URI"] = "mongodb+srv://Andrei:LsrbFqf9rk1fFZX5@dreamsdeluxe.x3fgxne.mongodb.net/?retryWrites=true&w=majority"
 app.config["JWT_SECRET_KEY"] = "cookiemonster"
