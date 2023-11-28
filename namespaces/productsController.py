@@ -13,23 +13,24 @@ nsProducts = Namespace(
 
 productsCollection = db["products"]
 tablesCollection = db["table"]
+employersCollection = db["employers"]
 
 
+@nsProducts.route("/add/<string:id>")
 
-@nsProducts.route("/add")
 class AddProductToTable(Resource):
     method_decorators = [jwt_required()]
 
     @nsProducts.doc(security="jsonWebToken")
     @nsProducts.expect(productPost)
     @nsProducts.marshal_with(productAdd)
-    def post(self):
+    @nsProducts.doc(params={"id": "Employer ID"})
+    def post(self,id):
         product_data = api.payload
         tableId = product_data.get("table_id")
-        print(tableId)
-        # Ensure the table exists and retrieve it
+       
         table = tablesCollection.find_one({"_id": ObjectId(tableId)})
-        print(table)
+        
         if table is None:
             abort(404, "Table not found")
 
@@ -54,27 +55,30 @@ class AddProductToTable(Resource):
 
         new_product["_id"] = str(product_id)
 
+        employersCollection.update_one({"_id": ObjectId(id)}, {"$inc": {"income": product_price}})
+
         return new_product, 201
 
 
-@nsProducts.route("/delall/<string:id>")
+@nsProducts.route("/delall/<string:id>/<string:employerId>")
 class DelProductToTable(Resource):
-
-    def delete(self, id):    
+    @nsProducts.doc(params={"id": "Product ID"})
+    @nsProducts.doc(params={"employerId": "Employer ID"})
+    def delete(self, id, employerId):    
         productDelete = productsCollection.find_one({"_id": ObjectId(id)})
         
         if productDelete is None:
             return abort(404, "There is no product with this id")
 
+        product_price=productDelete['price'] * productDelete['qty']*(-1)
         table = tablesCollection.find_one({"_id": ObjectId(productDelete['tableId'])})
-        print(table)
+        
        
-        table['billValue'] -= productDelete['price'] * productDelete['qty']
-        #table['totalAmount'] -= productDelete['price'] * productDelete['qty']
-        print(table)
+        table['billValue'] -= productDelete['price'] * productDelete['qty']    
         
         tablesCollection.update_one({"_id": ObjectId(productDelete['tableId'])}, {"$set": table})
         
+        employersCollection.update_one({"_id": ObjectId(employerId)}, {"$inc": {"income": product_price}})
        
         productsCollection.delete_one({"_id": ObjectId(id)})
         

@@ -148,10 +148,7 @@ class ResetTable(Resource):
             bill_value = table['billValue']
             user_id = table['userId']
 
-            # Print for debugging
-            print("User ID:", user_id)
-            print("Bill Value:", bill_value)
-
+            
             userCollection.update_one(
                 {"_id": ObjectId(user_id)},
                 {"$inc": {"totalAmount": bill_value}}
