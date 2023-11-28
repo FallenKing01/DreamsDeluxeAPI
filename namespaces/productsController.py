@@ -14,7 +14,7 @@ nsProducts = Namespace(
 productsCollection = db["products"]
 tablesCollection = db["table"]
 employersCollection = db["employers"]
-usersCollection = db["users"]
+usersCollection = db["user"]
 
 
 @nsProducts.route("/add/<string:id>")
@@ -57,7 +57,7 @@ class AddProductToTable(Resource):
         new_product["_id"] = str(product_id)
 
         findUser = usersCollection.find_one({"_id": ObjectId(id)})
-        
+        print(findUser)
         employersCollection.update_one({"email": findUser["email"]}, {"$inc": {"income": product_price}})
        
        
