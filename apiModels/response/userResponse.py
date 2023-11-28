@@ -25,3 +25,9 @@ getUsers = api.model(
         "role": fields.String,
     },
 )
+getUserAdmin = api.model(
+    "Users",
+    {
+        "id": fields.String,
+    },
+)

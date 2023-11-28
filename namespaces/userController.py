@@ -10,6 +10,7 @@ from extensions import authorizations, db
 nsUser = Namespace("user", authorizations=authorizations, description="User operations")
 
 userCollection = db["user"]
+employersCollection = db["employers"]
 
 
 
@@ -116,3 +117,33 @@ class DeleteUser(Resource):
 
         return {"message": "User deleted successfully"}, 200
 
+@nsUser.route("/getuseradmin/<string:id>")
+
+class GetUserAdmin(Resource):
+
+    @nsUser.doc(params={"id": "User ID"})
+
+   
+
+    def get(self, id):
+
+        if len(id) == 24 and all(c in "0123456789abcdefABCDEF" for c in id):
+
+            user = userCollection.find_one({"_id": ObjectId(id)})
+       
+
+            if user is None:
+
+                abort(404, "User not found")
+            
+            admin = employersCollection.find_one({'email': user["email"]})
+           
+            if admin is None:             
+                abort(404, "Admin not found")
+
+            return {"id": admin["userId"]}
+
+            
+        else:
+
+            abort(400, "Invalid user ID")
