@@ -10,6 +10,7 @@ employerResponse = api.model("Employer Post", {
     "password": fields.String,
     "role": fields.String,
     "salary": fields.Float,
+    "income": fields.Float,
     "birthdate": fields.String,
     "userId": fields.String
 
