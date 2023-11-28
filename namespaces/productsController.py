@@ -14,6 +14,7 @@ nsProducts = Namespace(
 productsCollection = db["products"]
 tablesCollection = db["table"]
 employersCollection = db["employers"]
+usersCollection = db["users"]
 
 
 @nsProducts.route("/add/<string:id>")
@@ -55,8 +56,11 @@ class AddProductToTable(Resource):
 
         new_product["_id"] = str(product_id)
 
-        employersCollection.update_one({"_id": ObjectId(id)}, {"$inc": {"income": product_price}})
-
+        findUser = usersCollection.find_one({"_id": ObjectId(id)})
+        
+        employersCollection.update_one({"email": findUser["email"]}, {"$inc": {"income": product_price}})
+       
+       
         return new_product, 201
 
 
@@ -78,7 +82,9 @@ class DelProductToTable(Resource):
         
         tablesCollection.update_one({"_id": ObjectId(productDelete['tableId'])}, {"$set": table})
         
-        employersCollection.update_one({"_id": ObjectId(employerId)}, {"$inc": {"income": product_price}})
+        findUser = usersCollection.find_one({"_id": ObjectId(employerId)})
+        
+        employersCollection.update_one({"email": findUser["email"]}, {"$inc": {"income": product_price}})
        
         productsCollection.delete_one({"_id": ObjectId(id)})
         
