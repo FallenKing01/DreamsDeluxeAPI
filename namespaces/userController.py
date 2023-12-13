@@ -5,6 +5,7 @@ from flask_restx import Namespace, Resource
 from apiModels.expect.userExpect import *
 from apiModels.response.userResponse import *
 from extensions import authorizations, db
+from urllib.parse import quote
 
 
 nsUser = Namespace("user", authorizations=authorizations, description="User operations")
@@ -56,6 +57,8 @@ class userAPI(Resource):
             "role": nsUser.payload["role"],
 
             "totalAmount": 0,
+            
+            "imageUrl": "https://dreamsblob.blob.core.windows.net/profileimages/d9e0d9f0-d02c-4bce-9f14-82464104f74b"
 
         }
 
@@ -96,7 +99,6 @@ class GetUser(Resource):
 
 
 @nsUser.route("/deluser/<string:id>")
-
 class DeleteUser(Resource):
 
     @nsUser.doc(params={"id": "User ID"})
@@ -118,7 +120,6 @@ class DeleteUser(Resource):
         return {"message": "User deleted successfully"}, 200
 
 @nsUser.route("/getuseradmin/<string:id>")
-
 class GetUserAdmin(Resource):
 
     @nsUser.doc(params={"id": "User ID"})
@@ -147,3 +148,28 @@ class GetUserAdmin(Resource):
         else:
 
             abort(400, "Invalid user ID")
+
+
+
+@nsUser.route("/nume/<string:id>/<path:url>")
+class ChangePhotoUrl(Resource):
+
+    @nsUser.doc(params={"id": "User ID", "url": "Photo URL"})
+    def put(self, id, url):
+        # Convert the string id to ObjectId
+        user_id = ObjectId(id)
+        
+        # Find the user by ID
+        user = userCollection.find_one({"_id": user_id})
+
+        if user is None:
+            abort(404, "User not found")
+
+        # URL decode the parameter
+        decoded_url = quote(url, safe=':/')
+
+        # Update the imageUrl using update_one
+        userCollection.update_one({"_id": user_id}, {"$set": {"imageUrl": decoded_url}})
+
+        return {"message": "User updated successfully"}, 200
+

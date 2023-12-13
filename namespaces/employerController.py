@@ -12,36 +12,7 @@ nsEmployer = Namespace("employer", authorizations=authorizations, description="E
 
 employerCollection = db["employers"]
 userCollection = db["user"]
-@nsEmployer.route("/getemployers/<string:id>")
-class GetEmployers(Resource):
-    method_decorators = [jwt_required()]
 
-    @nsEmployer.doc(security="jsonWebToken")
-    @nsEmployer.doc(params={'id': 'User ID'})
-    @nsEmployer.marshal_list_with(employerResponse)
-    def get(self, id):
-        employers = list(employerCollection.find({"userId":id}))
-
-        if not employers:
-            abort(404, "Employers not found")
-
-        return employers, 200
-
-
-@nsEmployer.route("/getemployer/<string:id>/<string:idEmployer>")
-class GetEmployer(Resource):
-    method_decorators = [jwt_required()]
-
-    @nsEmployer.doc(security="jsonWebToken")
-    @nsEmployer.doc(params={'id': 'User ID', 'idEmployer': 'Employer ID'})
-    @nsEmployer.marshal_with(employerResponse)
-    def get(self, id, idEmployer):
-        employer = employerCollection.find_one({"_id": ObjectId(idEmployer), "userId": id})
-
-        if not employer:
-            abort(404, "Employer not found")
-
-        return employer, 200
 
 
 @nsEmployer.route("/create")
@@ -83,6 +54,38 @@ class CreateEmployer(Resource):
         userCollection.insert_one(newEmployeracc)
         
         return newEmployer, 200
+
+
+@nsEmployer.route("/getemployers/<string:id>")
+class GetEmployers(Resource):
+    method_decorators = [jwt_required()]
+
+    @nsEmployer.doc(security="jsonWebToken")
+    @nsEmployer.doc(params={'id': 'User ID'})
+    @nsEmployer.marshal_list_with(employerResponse)
+    def get(self, id):
+        employers = list(employerCollection.find({"userId":id}))
+
+        if not employers:
+            abort(404, "Employers not found")
+
+        return employers, 200
+
+
+@nsEmployer.route("/getemployer/<string:id>/<string:idEmployer>")
+class GetEmployer(Resource):
+    method_decorators = [jwt_required()]
+
+    @nsEmployer.doc(security="jsonWebToken")
+    @nsEmployer.doc(params={'id': 'User ID', 'idEmployer': 'Employer ID'})
+    @nsEmployer.marshal_with(employerResponse)
+    def get(self, id, idEmployer):
+        employer = employerCollection.find_one({"_id": ObjectId(idEmployer), "userId": id})
+
+        if not employer:
+            abort(404, "Employer not found")
+
+        return employer, 200
 
 
 
