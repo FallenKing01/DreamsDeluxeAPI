@@ -46,10 +46,10 @@ def get_content_type(filename):
     else:
         return 'application/octet-stream' 
 
-@nsUpload.route('/upload_image/<string:id>')
+@nsUpload.route('/upload_image/<string:email>')
 class UploadImageResource(Resource):
     @nsUpload.expect(upload_parser)
-    def post(self,id):
+    def post(self,email):
         args = upload_parser.parse_args()
         file = args['file']
 
@@ -76,10 +76,10 @@ class UploadImageResource(Resource):
 
         # Construct the URL of the uploaded blob
         blob_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{blob_name}"
-        user = userCollection.find_one({"_id": ObjectId(id)})
+        user = userCollection.find_one({"email": email})
         if user is None:
             abort(404, "User not found")
 
-        userCollection.update_one({"_id": ObjectId(id)}, {"$set": {"imageUrl": blob_url}})
+        userCollection.update_one({"email": email}, {"$set": {"imageUrl": blob_url}})
 
         return {'success': True, 'message': 'File uploaded successfully', 'url': blob_url}
