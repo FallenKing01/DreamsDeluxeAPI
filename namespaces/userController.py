@@ -151,16 +151,16 @@ class GetUserAdmin(Resource):
 
 
 
-@nsUser.route("/nume/<string:id>/<path:url>")
+@nsUser.route("/nume/<string:email>/<path:url>")
 class ChangePhotoUrl(Resource):
 
-    @nsUser.doc(params={"id": "User ID", "url": "Photo URL"})
-    def put(self, id, url):
+    @nsUser.doc(params={"email": "User ID", "url": "Photo URL"})
+    def put(self, email, url):
         # Convert the string id to ObjectId
-        user_id = ObjectId(id)
+       
         
         # Find the user by ID
-        user = userCollection.find_one({"_id": user_id})
+        user = userCollection.find_one({"email": email})
 
         if user is None:
             abort(404, "User not found")
@@ -169,7 +169,7 @@ class ChangePhotoUrl(Resource):
         decoded_url = quote(url, safe=':/')
 
         # Update the imageUrl using update_one
-        userCollection.update_one({"_id": user_id}, {"$set": {"imageUrl": decoded_url}})
+        userCollection.update_one({"email": email}, {"$set": {"imageUrl": decoded_url}})
 
         return {"message": "User updated successfully"}, 200
 
