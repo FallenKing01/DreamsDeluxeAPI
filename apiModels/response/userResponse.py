@@ -23,6 +23,7 @@ getUsers = api.model(
         "email": fields.String,
         "password": fields.String,
         "role": fields.String,
+        "imageUrl": fields.String,
     },
 )
 getUserAdmin = api.model(
