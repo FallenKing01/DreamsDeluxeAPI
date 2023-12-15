@@ -49,7 +49,8 @@ class CreateEmployer(Resource):
             "email": employerData["email"],
             "password": employerData["password"],
             "role": employerData["role"],
-            "income": 0  
+            "income": 0  ,
+            "imageUrl":"https://dreamsblob.blob.core.windows.net/profileimages/waiters-concept-illustration_114360-2908.avif",
         }
         userCollection.insert_one(newEmployeracc)
         
