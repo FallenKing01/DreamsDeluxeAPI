@@ -96,6 +96,24 @@ class GetUser(Resource):
 
             abort(400, "Invalid user ID")
 
+@nsUser.route("/getuserbyemail/<string:email>")
+class getUserByEmail(Resource):
+
+    @nsUser.doc(params={"email": "User email"})
+
+    @nsUser.marshal_with(getUsers)
+
+    def get(self, email):
+
+
+            user = userCollection.find_one({"email": email})
+
+
+            if user is None:
+
+                abort(404, "User not found")
+
+            return user
 
 
 @nsUser.route("/deluser/<string:id>")
