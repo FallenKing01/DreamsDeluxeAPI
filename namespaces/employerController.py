@@ -153,3 +153,22 @@ class AddIncome(Resource):
         employerCollection.update_one({"_id":ObjectId(id)},{"$inc":{"income" : income}})
 
         return {"Message": "Income added successfully"}, 200
+
+
+@nsEmployer.route("/getEmployerByEmail/<string:email>")
+class searchEmployer(Resource):
+    #
+    method_decorators = [jwt_required()]
+
+    @nsEmployer.doc(security="jsonWebToken")
+    @nsEmployer.doc(params={'email': 'Employer email'})
+    @nsEmployer.marshal_list_with(employerResponse)
+
+    def get(self, email):
+        
+        currentEmployer = employerCollection.find_one({"email":email})
+
+        if not currentEmployer:
+            abort(404, "Employer not found")
+
+        return currentEmployer, 200

@@ -11,3 +11,12 @@ productPost = api.model(
         "table_id": fields.String(required=True, attribute="_id"),
     },
 )
+
+productPostAdmin = api.model(
+    "addMenuProduct",
+    {
+        "name": fields.String(required=True),
+        "type": fields.String(required=True),
+        "price": fields.Float(required=True),       
+    },
+)

@@ -34,3 +34,13 @@ productAdd =api.model(
         "qty": fields.Integer,
     },
 )
+
+productAddAdmin =api.model(
+    "ProductAddResponseAdmin",
+    {
+        "id": fields.String(attribute="_id"),
+        "name": fields.String,
+        "type": fields.String(required=True),
+        "price": fields.Float,
+    },
+)

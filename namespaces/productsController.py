@@ -15,7 +15,7 @@ productsCollection = db["products"]
 tablesCollection = db["table"]
 employersCollection = db["employers"]
 usersCollection = db["user"]
-
+menuCollection = db["menu"]
 
 @nsProducts.route("/add/<string:id>")
 
@@ -126,3 +126,29 @@ class DelProductQuantity(Resource):
         tablesCollection.update_one({"_id": ObjectId(productDelete['tableId'])}, {"$set": table})
 
         return {"Message": f"{qty} products deleted successfully"}, 201
+
+#############################################################################################################
+#Admin adding products in the menu 
+#############################################################################################################
+@nsProducts.route("/addmenu/<string:adminId>")
+class AddProductToMenu(Resource):
+    method_decorators = [jwt_required()]
+    @nsProducts.doc(security="jsonWebToken")
+    @nsProducts.expect(productPostAdmin)
+    @nsProducts.marshal_with(productAddAdmin)
+    @nsProducts.doc(params={"adminId": "Admin ID"})
+    def post(self,adminId):
+        productData = api.payload
+        admin = usersCollection.find_one({"_id": ObjectId(adminId)})
+        if admin is None:
+            abort(404, "Admin not found")
+        newProduct = {
+            "name": productData["name"],
+            "price": productData["price"],
+            "type": productData["type"],
+            "adminId": adminId,
+        }
+        productId = menuCollection.insert_one(newProduct).inserted_id
+        newProduct["_id"] = str(productId)
+        
+        return newProduct, 201
