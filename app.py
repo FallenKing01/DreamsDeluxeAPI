@@ -12,7 +12,7 @@ from namespaces.productsController import nsProducts
 from namespaces.loginController import nsLogin
 from namespaces.employerController import nsEmployer
 from namespaces.uploadController import nsUpload
-
+from namespaces.menuController import nsMenu
 app = Flask(__name__)
 CORS(app)
 
@@ -31,7 +31,7 @@ api.add_namespace(nsTables)
 api.add_namespace(nsProducts)
 api.add_namespace(nsEmployer)
 api.add_namespace(nsUpload)
-
+api.add_namespace(nsMenu)
 mongo = PyMongo(app)
 jwt = JWTManager(app)
 
