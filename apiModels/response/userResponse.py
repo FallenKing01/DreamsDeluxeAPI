@@ -13,6 +13,11 @@ getUserEmail = api.model(
         "password": fields.String,
         "role": fields.String,
         "totalAmount": fields.Float,
+        "companyName": fields.String,
+        "companyAddress": fields.String,
+        "companyPhone": fields.String,
+        "companyEmail": fields.String,
+        "location": fields.String,
     },
 )
 
@@ -24,6 +29,11 @@ getUsers = api.model(
         "password": fields.String,
         "role": fields.String,
         "imageUrl": fields.String,
+        "companyName": fields.String,
+        "companyAddress": fields.String,
+        "companyPhone": fields.String,
+        "companyEmail": fields.String,
+        "location": fields.String,
     },
 )
 getUserAdmin = api.model(

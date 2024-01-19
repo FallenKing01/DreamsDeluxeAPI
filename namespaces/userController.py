@@ -49,17 +49,16 @@ class userAPI(Resource):
         # Create a new user
 
         user = {
-
             "email": nsUser.payload["username"],
-
             "password": nsUser.payload["password"],
-
             "role": nsUser.payload["role"],
-
             "totalAmount": 0,
-            
+            "companyName": nsUser.payload["companyName"],
+            "companyAddress": nsUser.payload["companyAddress"],
+            "companyPhone": nsUser.payload["companyPhone"],
+            "companyEmail": nsUser.payload["companyEmail"],
+            "location": nsUser.payload["location"],
             "imageUrl": "https://dreamsblob.blob.core.windows.net/profileimages/d9e0d9f0-d02c-4bce-9f14-82464104f74b"
-
         }
 
 
