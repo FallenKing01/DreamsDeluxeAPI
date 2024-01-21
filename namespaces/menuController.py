@@ -12,7 +12,7 @@ menuCollection = db["menu"]
 
 
 nsMenu = Namespace(
-    "Menu", authorizations=authorizations, description="Menu operations"
+    "menu", authorizations=authorizations, description="Menu operations"
 )
 
 
