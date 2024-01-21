@@ -25,6 +25,7 @@ getUsers = api.model(
     "Users",
     {
         "id": fields.String(attribute="_id"),
+        "adminId": fields.String,
         "email": fields.String,
         "password": fields.String,
         "role": fields.String,
@@ -36,6 +37,8 @@ getUsers = api.model(
         "location": fields.String,
     },
 )
+
+
 getUserAdmin = api.model(
     "Users",
     {
