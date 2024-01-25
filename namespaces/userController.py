@@ -34,7 +34,6 @@ class userAPI(Resource):
 
 
 @nsUser.route("/create")
-
 class userAPI(Resource):
 
     @nsUser.expect(userPost)
@@ -68,7 +67,22 @@ class userAPI(Resource):
 
 
         return {"User id": insertedId}, 201
+@nsUser.route("/verifyuser/<string:email>")
+class VerifyUser(Resource):
 
+    @nsUser.doc(params={"email": "User email"})
+
+    @nsUser.marshal_with(getUsers)
+
+    def get(self, email):
+
+        user = userCollection.find_one({"email": email})
+
+
+        if user is None:
+            return {"message": "You can create a user with this email"}, 200
+
+        return  {"message": "User with this email already exists"}, 409
 
 
 @nsUser.route("/getuser/<string:id>")
