@@ -31,7 +31,9 @@ class LoginApi(Resource):
             "username": user.get("email"),
             "role": user.get("role"),
         }
+
         expires = datetime.utcnow() + timedelta(days=30)
+        
         return {
             "Authentication successful": create_access_token(
                 userData,

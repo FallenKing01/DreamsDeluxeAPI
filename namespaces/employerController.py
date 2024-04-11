@@ -18,7 +18,6 @@ userCollection = db["user"]
 @nsEmployer.route("/create")
 class CreateEmployer(Resource):
     method_decorators = [jwt_required()]
-
     @nsEmployer.doc(security="jsonWebToken")
     @nsEmployer.expect(employerExpect)
     @nsEmployer.marshal_with(employerResponse)

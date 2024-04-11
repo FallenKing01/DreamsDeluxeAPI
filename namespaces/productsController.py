@@ -40,7 +40,7 @@ class AddProductToTable(Resource):
             "price": product_data["price"],
             "qty": product_data["qty"],
             "tableId": tableId,
-        }
+        }   
 
         # Calculate the product's total price and update the table's billValue
         product_price = new_product["price"] * new_product["qty"]
