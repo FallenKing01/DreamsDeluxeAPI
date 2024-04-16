@@ -1,7 +1,7 @@
 from flask_restx import fields
 
-from apiModels.response.productResponse import productTable
-from extensions import api
+from Models.response.productResponse import productTable
+from Domain.extensions import api
 
 tablePostResponse = api.model(
     "Tabel",

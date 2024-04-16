@@ -1,6 +1,6 @@
 from flask_restx import fields
 
-from extensions import api
+from Domain.extensions import api
 
 tablePost = api.model(
     "TabelExpect",

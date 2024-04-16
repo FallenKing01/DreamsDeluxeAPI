@@ -15,3 +15,11 @@ cluster = MongoClient(
     "mongodb+srv://Andrei:LsrbFqf9rk1fFZX5@dreamsdeluxe.x3fgxne.mongodb.net/"
 )
 db = cluster["dreamsDeluxe"]
+
+userCollection = db["user"]
+employersCollection = db["employers"]
+menuCollection = db["menu"]
+productsCollection = db["products"]
+tablesCollection = db["table"]
+reservationCollection = db["reservation"]
+

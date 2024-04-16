@@ -2,9 +2,10 @@ from bson import ObjectId  # Import ObjectId from the bson module
 from flask import abort
 from flask_jwt_extended import jwt_required
 from flask_restx import Namespace, Resource
-from extensions import authorizations, db
-from apiModels.expect.reservationExpect import *
-from apiModels.response.reservationResponse import *
+from Domain.extensions import authorizations, db
+from Infrastructure.Repositories.reservationRepo import *
+from Models.expect.reservationExpect import *
+from Models.response.reservationResponse import *
 import re
 
 nsReservation = Namespace("reservation", description="Reservation operations")
@@ -20,23 +21,18 @@ class postReservation(Resource):
     @nsReservation.doc(params={"tableId": "Table id"})
 
     def post(self,tableId):
-        reservationData = api.payload
-        table = tableCollection.find_one({"_id": ObjectId(tableId)})
-        if table is None:
-            abort(404, "Table not found")
+        try:
 
-        newReservation = {
-            "tableId": tableId,
-            "reservationName": reservationData["reservationName"],
-            "startTime": reservationData["startTime"],
-            "endTime": reservationData["endTime"],
-            "guests": reservationData["guests"],
-            "specialRequests": reservationData["specialRequests"],
-        }
-        reservationId = reservationCollection.insert_one(newReservation).inserted_id
-        newReservation["_id"] = str(reservationId)
+            reservation = postReservationRepo(nsReservation.payload,tableId)
 
-        return newReservation, 201
+            return reservation,201
+
+        except CustomException as ce:
+            abort(ce.statusCode, ce.message)
+
+        except Exception:
+            abort(500, "Something went wrong")
+
 
 
 @nsReservation.route("/<string:tableId>/")
@@ -54,9 +50,11 @@ class getReservation(Resource):
 class getRestaurants(Resource):
     @nsReservation.marshal_with(reservationRestaurantResponse)
     def get(self):
-        restaurants = userCollection.find({"role": "admin"})
-
-        return list(restaurants), 200
+       try:
+            restaurants = getReservationRepo()
+            return restaurants, 200
+       except Exception:
+            abort(500, "Something went wrong")
 
 
 @nsReservation.route("/searchRestaurant/<string:restaurantName>")
@@ -65,17 +63,13 @@ class SearchRestaurant(Resource):
     @nsReservation.doc(params={"restaurantName": "Restaurant name"})
     @nsReservation.marshal_with(reservationRestaurantResponse)
     def get(self, restaurantName):
-        
-        restaurants = userCollection.find({
-            "companyName": {"$regex": f".*{restaurantName}.*", "$options": "i"},
-            "role": "admin"
-        })
 
-        result = list(restaurants)
-
-        if not result:
-            abort(404, f"No restaurants found containing the name: {restaurantName}")
-
-        return result, 200
+        try:
+            restaurants = searchRestaurantsRepo(restaurantName)
+            return restaurants, 200
+        except CustomException as ce:
+            abort(ce.statusCode, ce.message)
+        except Exception:
+            abort(500, "Something went wrong")
 
 

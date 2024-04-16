@@ -1,6 +1,6 @@
 from flask_restx import fields
 
-from extensions import api
+from Domain.extensions import api
 
 getUserId = api.model(
     "User", {"email": fields.String, "password": fields.String, "role": fields.String}

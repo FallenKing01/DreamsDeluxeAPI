@@ -6,7 +6,7 @@ import werkzeug
 from datetime import datetime, timedelta
 from azure.storage.blob import ContentSettings
 import uuid  # Import the uuid module for generating random UUIDs
-from extensions import db
+from Domain.extensions import db
 from bson import ObjectId
 
 userCollection = db["user"]

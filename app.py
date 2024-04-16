@@ -4,16 +4,16 @@ from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 import os
 from flask_cors import CORS 
-from extensions import api, db, jwt  
+from Domain.extensions import api, db, jwt
 
-from namespaces.userController import nsUser
-from namespaces.tablesController import nsTables
-from namespaces.productsController import nsProducts
-from namespaces.loginController import nsLogin
-from namespaces.employerController import nsEmployer
-from namespaces.uploadController import nsUpload
-from namespaces.menuController import nsMenu
-from namespaces.reservation import nsReservation
+from Controllers.userController import nsUser
+from Controllers.tablesController import nsTables
+from Controllers.productsController import nsProducts
+from Controllers.loginController import nsLogin
+from Controllers.employerController import nsEmployer
+from Controllers.uploadController import nsUpload
+from Controllers.menuController import nsMenu
+from Controllers.reservation import nsReservation
 app = Flask(__name__)
 CORS(app)
 
@@ -54,4 +54,4 @@ def user_lookup_callback(jwt_header, jwt_data):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

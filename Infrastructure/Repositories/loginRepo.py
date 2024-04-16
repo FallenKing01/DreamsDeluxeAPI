@@ -1,30 +1,23 @@
+from Utils.Exceptions.customExceptions import CustomException
+from Domain.extensions import employersCollection, userCollection
 from datetime import datetime, timedelta
 
-from flask import abort
 from flask_jwt_extended import create_access_token
-from flask_restx import Namespace, Resource
-
-from apiModels.expect.userExpect import login
-from extensions import db
-
-nsLogin = Namespace("login", description="Login user")
-collection = db["user"]
 
 
-@nsLogin.route("/")
-class LoginApi(Resource):
-    @nsLogin.expect(login)
-    def post(self):
-        username = nsLogin.payload.get("username")
-        password = nsLogin.payload.get("password")
 
-        user = collection.find_one({"email": username})
+def loginRepo(accountData):
+
+        username = accountData["username"]
+        password = accountData["password"]
+
+        user = userCollection.find_one({"email": username})
 
         if user is None:
-            abort(404, "User not found")
+            raise CustomException(404, "User not found")
 
         if password != user.get("password"):
-            abort(401, "Wrong password")
+            raise CustomException(401, "Wrong password")
 
         userData = {
             "id": str(user["_id"]),
@@ -33,7 +26,7 @@ class LoginApi(Resource):
         }
 
         expires = datetime.utcnow() + timedelta(days=30)
-        
+
         return {
             "Authentication successful": create_access_token(
                 userData,
