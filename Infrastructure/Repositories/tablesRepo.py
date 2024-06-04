@@ -12,15 +12,28 @@ def createTableRepo(tableData,userId):
     if user is None:
         raise CustomException(404, "The user does not exist")
 
-    newTable = {
-        "name": tableData["name"],
-        "capacity": tableData.get("capacity"),
-        "billValue": 0,
-        "userId": str(userId),
-    }
+    if user["role"] == "admin":
+        newTable = {
+            "name": tableData["name"],
+            "capacity": tableData.get("capacity"),
+            "billValue": 0,
+            "userId": str(userId),
+        }
 
-    insertedTable = tablesCollection.insert_one(newTable)
-    insTableId = str(insertedTable.inserted_id)
+        insertedTable = tablesCollection.insert_one(newTable)
+        insTableId = str(insertedTable.inserted_id)
+
+    if user["role"] != "admin":
+        newTable = {
+            "name": tableData["name"],
+            "capacity": tableData.get("capacity"),
+            "billValue": 0,
+            "userId": str(user["adminId"]),
+        }
+
+        insertedTable = tablesCollection.insert_one(newTable)
+        insTableId = str(insertedTable.inserted_id)
+
 
     return insTableId
 

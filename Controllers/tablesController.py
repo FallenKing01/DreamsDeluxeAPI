@@ -17,16 +17,20 @@ nsTables = Namespace(
 )
 
 
-@nsTables.route("/create")
+@nsTables.route("/create/<string:userId>")
 class TableAPI(Resource):
     method_decorators = [jwt_required()]
 
+
     @nsTables.doc(security="jsonWebToken")
     @nsTables.expect(tablePost)
-    def post(self):
+    def post(self, userId):
         try:
-            insTableId = createTableRepo(nsTables.payload,current_user["_id"])
+
+            insTableId = createTableRepo(nsTables.payload,userId)
+
             return {"Table id": insTableId}, 201
+
         except CustomException as ce:
             abort(ce.statusCode, ce.message)
 
