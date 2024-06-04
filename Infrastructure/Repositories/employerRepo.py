@@ -1,6 +1,7 @@
 from bson import ObjectId
 from Utils.Exceptions.customExceptions import CustomException
 from Domain.extensions import employersCollection, userCollection
+from Controllers.uploadController import deleteImageFromBlob
 def createEmployeeRepo(employerData):
 
     user = userCollection.find_one({"_id": ObjectId(employerData["userId"])})
@@ -42,6 +43,8 @@ def deleteEmployeeRepo(id):
 
     if not employer:
         raise CustomException(404, "Employer not found")
+
+    deleteImageFromBlob(employer["imageUrl"], "profileimages")
 
     employersCollection.delete_one({"_id": ObjectId(id)})
     userCollection.delete_one({"email": employer["email"]})

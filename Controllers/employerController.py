@@ -8,7 +8,6 @@ from Models.response.employerResponse import *
 from Domain.extensions import authorizations, db
 from Infrastructure.Repositories.userRepo import *
 from Infrastructure.Repositories.employerRepo import *
-
 nsEmployer = Namespace("employer", authorizations=authorizations, description="Employer operations")
 
 employerCollection = db["employers"]
@@ -82,6 +81,7 @@ class DeleteEmployer(Resource):
 
         try:
             deleteEmployeeRepo(id)
+
 
             return {"message": "Employer deleted successfully"}, 200
 

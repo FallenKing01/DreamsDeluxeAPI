@@ -1,7 +1,7 @@
 from bson import ObjectId
 from Utils.Exceptions.customExceptions import CustomException
 from Domain.extensions import menuCollection, userCollection
-
+from Controllers.uploadController import deleteImageFromBlob
 
 def addProductInMenuRepo(productData,adminId):
 
@@ -13,6 +13,8 @@ def addProductInMenuRepo(productData,adminId):
         "price": productData["price"],
         "type": productData["type"],
         "adminId": adminId,
+        "imageUrl": "https://dreamsblob.blob.core.windows.net/foodimages/noimage.jpg",
+        "description": productData["description"]
     }
     productId = menuCollection.insert_one(newProduct).inserted_id
     newProduct["_id"] = str(productId)
@@ -35,7 +37,12 @@ def deleteProductFromMenuRepo(prodId):
     if product is None:
         raise CustomException(404, "Product not found")
 
-    menuCollection.delete_one({"_id": ObjectId(prodId)})
+    imageUrlData = product["imageUrl"].split('/')[-1]
+
+    if imageUrlData != "noimage.jpg":
+        deleteImageFromBlob(product["imageUrl"], "foodimages")
+        menuCollection.delete_one({"_id": ObjectId(prodId)})
+
 
 def searchProductFromMenuRepo(productName):
     # Perform a case-insensitive search on the lowercased product names

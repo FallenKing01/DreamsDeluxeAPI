@@ -13,10 +13,12 @@ def addProductToTableRepo(productData,id):
         raise CustomException(404, "Table not found")
 
     newProduct = {
+
         "name": productData["name"],
         "price": productData["price"],
         "qty": productData["qty"],
         "tableId": tableId,
+        "menuProductId": productData["menuProductId"],
     }
 
     # Calculate the product's total price and update the table's billValue

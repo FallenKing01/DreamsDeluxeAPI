@@ -1,7 +1,7 @@
 from bson import ObjectId
 from Utils.Exceptions.customExceptions import CustomException
-from Domain.extensions import tablesCollection, userCollection,productsCollection
-from flask_jwt_extended import current_user, jwt_required
+from Domain.extensions import tablesCollection, userCollection,productsCollection,productsHistoryCollection
+from datetime import datetime
 
 def createTableRepo(tableData,userId):
 
@@ -101,6 +101,26 @@ def resetTableDataRepo(id):
     # Reset table's bill value
     tablesCollection.update_one({"_id": ObjectId(id)}, {"$set": {"billValue": 0}})
 
+    # Aggregate quantities and insert into productsHistoryCollection
+    pipeline = [
+        {"$match": {"tableId": id}},
+        {"$group": {
+            "_id": "$menuProductId",
+            "totalQty": {"$sum": "$qty"},
+            "timeStamp": {"$first": datetime.utcnow()}
+        }}
+    ]
+
+    aggregated_products = productsCollection.aggregate(pipeline)
+
+    for product in aggregated_products:
+        productsHistoryCollection.insert_one({
+            "menuProductId": product["_id"],
+            "qty": product["totalQty"],
+            "timeStamp": product["timeStamp"]
+        })
+
     # Delete products associated with the table
     productsCollection.delete_many({"tableId": id})
+
 

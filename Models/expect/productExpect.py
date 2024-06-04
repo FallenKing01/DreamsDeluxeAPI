@@ -5,6 +5,7 @@ from Domain.extensions import api
 productPost = api.model(
     "Product",
     {
+        "menuProductId": fields.String(required=True),
         "name": fields.String(required=True),
         "price": fields.Float(required=True),
         "qty": fields.Integer(required=True),
@@ -17,6 +18,7 @@ productPostAdmin = api.model(
     {
         "name": fields.String(required=True),
         "type": fields.String(required=True),
-        "price": fields.Float(required=True),       
+        "price": fields.Float(required=True),
+        "description": fields.String(required=True),
     },
 )

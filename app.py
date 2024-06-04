@@ -11,7 +11,7 @@ from Controllers.tablesController import nsTables
 from Controllers.productsController import nsProducts
 from Controllers.loginController import nsLogin
 from Controllers.employerController import nsEmployer
-from Controllers.uploadController import nsUpload
+from Controllers.uploadController import nsUpload,deleteImageFromBlob
 from Controllers.menuController import nsMenu
 from Controllers.reservation import nsReservation
 app = Flask(__name__)
@@ -36,7 +36,6 @@ api.add_namespace(nsMenu)
 api.add_namespace(nsReservation)
 mongo = PyMongo(app)
 jwt = JWTManager(app)
-
 
 # JWT Identity Loader
 @jwt.user_identity_loader

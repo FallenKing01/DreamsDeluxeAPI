@@ -11,9 +11,7 @@ from Domain.extensions import authorizations, db
 
 
 
-nsMenu = Namespace(
-    "menu", authorizations=authorizations, description="Menu operations"
-)
+nsMenu = Namespace("menu", authorizations=authorizations, description="Menu operations")
 
 
 @nsMenu.route("/addmenu/<string:adminId>")

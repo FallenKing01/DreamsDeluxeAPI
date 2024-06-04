@@ -22,4 +22,4 @@ menuCollection = db["menu"]
 productsCollection = db["products"]
 tablesCollection = db["table"]
 reservationCollection = db["reservation"]
-
+productsHistoryCollection = db["productHistory"]
