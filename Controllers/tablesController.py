@@ -97,6 +97,7 @@ class ResetTable(Resource):
     def put(self, id):
        
             try:
+
                 resetTableDataRepo(id)
                 return {"Message": "The table was reset successfully"}, 200
 

@@ -14,6 +14,10 @@ from Controllers.employerController import nsEmployer
 from Controllers.uploadController import nsUpload,deleteImageFromBlob
 from Controllers.menuController import nsMenu
 from Controllers.reservation import nsReservation
+from Controllers.tableMapController import nsTableMap
+from Controllers.productHistoryController import nsProductHistory
+
+
 app = Flask(__name__)
 CORS(app)
 
@@ -34,6 +38,9 @@ api.add_namespace(nsEmployer)
 api.add_namespace(nsUpload)
 api.add_namespace(nsMenu)
 api.add_namespace(nsReservation)
+api.add_namespace(nsTableMap)
+api.add_namespace(nsProductHistory)
+
 mongo = PyMongo(app)
 jwt = JWTManager(app)
 

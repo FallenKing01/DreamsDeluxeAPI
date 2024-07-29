@@ -98,9 +98,11 @@ def deleteTableRepo(id):
     tablesCollection.delete_one({"_id": ObjectId(id)})
 
 def resetTableDataRepo(id):
+
     table = tablesCollection.find_one({"_id": ObjectId(id)})
 
     if table is None:
+
         raise CustomException(404, "Table not found")
 
     bill_value = table['billValue']
@@ -128,6 +130,7 @@ def resetTableDataRepo(id):
 
     for product in aggregated_products:
         productsHistoryCollection.insert_one({
+            "adminId": table["userId"],
             "menuProductId": product["_id"],
             "qty": product["totalQty"],
             "timeStamp": product["timeStamp"]

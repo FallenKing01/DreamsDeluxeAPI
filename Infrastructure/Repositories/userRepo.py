@@ -2,16 +2,19 @@
 from Domain.extensions import  userCollection,employersCollection
 from bson import ObjectId
 from Utils.Exceptions.customExceptions import CustomException
+from Infrastructure.Repositories.tablesMapRepo import createTableMapRepo
+
+
 def createUserRepo(newUser):
 
     user = userCollection.find_one({"email": newUser["username"]})
 
     if user:
+
         raise CustomException(409, "User with this email already exists")
 
-    # Create a new user
-
     user = {
+
         "email": newUser["username"],
         "password": newUser["password"],
         "role": newUser["role"],
@@ -25,8 +28,9 @@ def createUserRepo(newUser):
     }
 
     insertedItm = userCollection.insert_one(user)
-
     insertedId = str(insertedItm.inserted_id)
+
+    createTableMapRepo(insertedId)
 
     return insertedId
 
@@ -35,6 +39,7 @@ def verifyUserRepo(email):
     user = userCollection.find_one({"email": email})
 
     if user is not None:
+
         raise CustomException(409,"User with this email already exists")
 
 def getUserByIdRepo(id):
@@ -44,11 +49,13 @@ def getUserByIdRepo(id):
         user = userCollection.find_one({"_id": ObjectId(id)})
 
         if user is None:
+
             raise CustomException(404, "User not found")
 
         return user
 
     else:
+
         raise CustomException(400, "Invalid user ID")
 
 def getUserByEmailRepo(email):
@@ -56,6 +63,7 @@ def getUserByEmailRepo(email):
     user = userCollection.find_one({"email": email})
 
     if user is None:
+
         raise CustomException(404, "User not found")
 
     return user

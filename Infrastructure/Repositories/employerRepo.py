@@ -5,14 +5,17 @@ from Controllers.uploadController import deleteImageFromBlob
 def createEmployeeRepo(employerData):
 
     user = userCollection.find_one({"_id": ObjectId(employerData["userId"])})
-    print(user)
+
     if user is None:
+
         raise  CustomException(404, "The user does not exist")
 
     if userCollection.find_one({"email": employerData["email"]}):
+
         raise  CustomException(400, "The email is already used")
 
     newEmployer = {
+
         "name": employerData["name"],
         "email": employerData["email"],
         "password": employerData["password"],
@@ -22,16 +25,19 @@ def createEmployeeRepo(employerData):
         "userId": employerData["userId"],
         "income": 0,
         "description": employerData["description"]
+
     }
     employersCollection.insert_one(newEmployer)
 
     newEmployeracc = {
+
         "email": employerData["email"],
         "password": employerData["password"],
         "role": employerData["role"],
         "income": 0,
         "imageUrl": "https://dreamsblob.blob.core.windows.net/profileimages/waiters-concept-illustration_114360-2908.avif",
         "adminId": employerData["userId"],
+
     }
 
     userCollection.insert_one(newEmployeracc)

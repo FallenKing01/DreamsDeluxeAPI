@@ -6,7 +6,6 @@ from bson import ObjectId
 from Models.expect.employerExpect import *
 from Models.response.employerResponse import *
 from Domain.extensions import authorizations, db
-from Infrastructure.Repositories.userRepo import *
 from Infrastructure.Repositories.employerRepo import *
 nsEmployer = Namespace("employer", authorizations=authorizations, description="Employer operations")
 
@@ -23,10 +22,10 @@ class CreateEmployer(Resource):
     @nsEmployer.marshal_with(employerResponse)
     def post(self):
         try:
+
             employee = createEmployeeRepo(nsEmployer.payload)
 
             return employee,200
-
 
         except CustomException as ce:
 
