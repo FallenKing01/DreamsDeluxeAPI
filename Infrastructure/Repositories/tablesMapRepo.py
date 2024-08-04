@@ -59,3 +59,24 @@ def updateTableMapRepo(adminId,newTableMap):
 
         raise CustomException(403, "You are not allowed to update a table map")
 
+def getTableMapRepo(adminId):
+
+    user = userCollection.find_one({"_id": ObjectId(adminId)})
+
+    if user is None:
+
+        raise CustomException(404, "The user does not exist")
+
+
+    tableMap = tablesMapCollection.find_one({"adminId": adminId})
+
+    if tableMap is None:
+
+        raise CustomException(404, "Table map does not exist")
+
+    tableMap["_id"] = str(tableMap["_id"])
+
+    return tableMap
+
+
+

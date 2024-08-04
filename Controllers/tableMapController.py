@@ -7,6 +7,7 @@ from Models.expect.tablesMapExpect import tableMapExpect
 from Domain.extensions import authorizations
 from Infrastructure.Repositories.tablesMapRepo import *
 
+
 nsTableMap = Namespace("tablemap", authorizations=authorizations, description="Table map operations")
 
 @nsTableMap.route("/update/<string:adminId>")
@@ -25,5 +26,25 @@ class UpdateTableMap(Resource):
             abort(ce.statusCode, ce.message)
 
         except Exception:
+
             abort(500, "Something went wrong")
 
+@nsTableMap.route("/gettablemap/<string:adminId>")
+class GetTableMap(Resource):
+    #method_decorators = [jwt_required()]
+    #@nsTableMap.doc(security="jsonWebToken")
+    def get(self, adminId):
+
+        try:
+
+            response = getTableMapRepo(adminId)
+
+            return response, 200
+
+        except CustomException as ce:
+
+            abort(ce.statusCode, ce.message)
+
+        except Exception:
+
+            abort(500, "Something went wrong")

@@ -30,7 +30,9 @@ def createUserRepo(newUser):
     insertedItm = userCollection.insert_one(user)
     insertedId = str(insertedItm.inserted_id)
 
-    createTableMapRepo(insertedId)
+    if user["role"] == "admin":
+
+        createTableMapRepo(insertedId)
 
     return insertedId
 
