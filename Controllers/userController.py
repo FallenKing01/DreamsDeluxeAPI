@@ -7,6 +7,7 @@ from Domain.extensions import authorizations,api
 from urllib.parse import quote
 from Infrastructure.Repositories.userRepo import *
 from flask import abort
+from Infrastructure.Repositories.employerRepo import deleteEmployeeRepo
 
 nsUser = Namespace("user", authorizations=authorizations, description="User operations")
 
@@ -110,7 +111,7 @@ class DeleteUser(Resource):
 
         try:
 
-            deleteUserById(id)
+            deleteEmployeeRepo(id)
 
             return {"message": "User deleted successfully"}, 200
 
