@@ -45,12 +45,14 @@ def createEmployeeRepo(employerData):
     return newEmployer
 
 def deleteEmployeeRepo(id):
+
     employer = employersCollection.find_one({"_id": ObjectId(id)})
 
     if not employer:
         raise CustomException(404, "Employer not found")
 
-    deleteImageFromBlob(employer["imageUrl"], "profileimages")
+    if employer["imageUrl"] != "https://dreamsblob.blob.core.windows.net/profileimages/waiters-concept-illustration_114360-2908.avif":
+        deleteImageFromBlob(employer["imageUrl"], "profileimages")
 
     employersCollection.delete_one({"_id": ObjectId(id)})
     userCollection.delete_one({"email": employer["email"]})
