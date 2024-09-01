@@ -54,7 +54,7 @@ def deleteEmployeeRepo(id):
     employerAcc = userCollection.find_one({"email": employer["email"]})
 
     if employerAcc["imageUrl"] != "https://dreamsblob.blob.core.windows.net/profileimages/waiters-concept-illustration_114360-2908.avif":
-        deleteImageFromBlob(employer["imageUrl"], "profileimages")
+        deleteImageFromBlob(employerAcc["imageUrl"], "profileimages")
 
     employersCollection.delete_one({"_id": ObjectId(id)})
     userCollection.delete_one({"email": employer["email"]})
