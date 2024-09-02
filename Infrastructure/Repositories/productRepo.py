@@ -19,6 +19,7 @@ def addProductToTableRepo(productData,id):
         "qty": productData["qty"],
         "tableId": tableId,
         "menuProductId": productData["menuProductId"],
+        "userId": id
     }
 
     # Calculate the product's total price and update the table's billValue
@@ -41,7 +42,7 @@ def addProductToTableRepo(productData,id):
 
     return newProduct
 
-def delProductToTableRepo(id,employerId):
+def delProductToTableRepo(id):
 
     productDelete = productsCollection.find_one({"_id": ObjectId(id)})
 
@@ -54,8 +55,9 @@ def delProductToTableRepo(id,employerId):
     table['billValue'] -= productDelete['price'] * productDelete['qty']
 
     tablesCollection.update_one({"_id": ObjectId(productDelete['tableId'])}, {"$set": table})
+    print(productDelete)
 
-    findUser = userCollection.find_one({"_id": ObjectId(employerId)})
+    findUser = userCollection.find_one({"_id": ObjectId(productDelete["userId"])})
 
     employersCollection.update_one({"email": findUser["email"]}, {"$inc": {"income": product_price}})
 

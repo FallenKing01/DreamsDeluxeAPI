@@ -43,14 +43,13 @@ class AddProductToTable(Resource):
 
 
 
-@nsProducts.route("/delall/<string:id>/<string:employerId>")
+@nsProducts.route("/delall/<string:id>")
 class DelProductToTable(Resource):
     @nsProducts.doc(params={"id": "Product ID"})
-    @nsProducts.doc(params={"employerId": "Employer ID"})
-    def delete(self, id, employerId):    
+    def delete(self, id):
 
         try:
-            delProductToTableRepo(id,employerId)
+            delProductToTableRepo(id)
             return {"Message": "Product deleted successfully"}, 201
 
         except CustomException as ce:
