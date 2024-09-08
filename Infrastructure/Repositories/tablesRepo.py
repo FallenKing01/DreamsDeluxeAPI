@@ -122,18 +122,19 @@ def resetTableDataRepo(id):
         {"$group": {
             "_id": "$menuProductId",
             "totalQty": {"$sum": "$qty"},
+            "userId": {"$first": "$userId"},  # Adding userId to the result
             "timeStamp": {"$first": datetime.utcnow()}
         }}
     ]
 
     aggregated_products = productsCollection.aggregate(pipeline)
-
     for product in aggregated_products:
         productsHistoryCollection.insert_one({
             "adminId": table["userId"],
             "menuProductId": product["_id"],
             "qty": product["totalQty"],
-            "timeStamp": product["timeStamp"]
+            "timeStamp": product["timeStamp"],
+            "userId": product["userId"]
         })
 
     # Delete products associated with the table
