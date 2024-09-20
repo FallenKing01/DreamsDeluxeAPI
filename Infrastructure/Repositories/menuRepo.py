@@ -43,6 +43,10 @@ def deleteProductFromMenuRepo(prodId):
         deleteImageFromBlob(product["imageUrl"], "foodimages")
         menuCollection.delete_one({"_id": ObjectId(prodId)})
 
+    else:
+
+        menuCollection.delete_one({"_id": ObjectId(prodId)})
+
 
 def searchProductFromMenuRepo(productName):
     # Perform a case-insensitive search on the lowercased product names
