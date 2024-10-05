@@ -17,14 +17,16 @@ def createUserRepo(newUser):
 
         "email": newUser["username"],
         "password": newUser["password"],
-        "role": newUser["role"],
+        "role": "admin",
         "totalAmount": 0,
         "companyName": newUser["companyName"],
         "companyAddress": newUser["companyAddress"],
         "companyPhone": newUser["companyPhone"],
-        "companyEmail": newUser["companyEmail"],
         "location": newUser["location"],
-        "imageUrl": "https://dreamsblob.blob.core.windows.net/profileimages/d9e0d9f0-d02c-4bce-9f14-82464104f74b"
+        "county": newUser["county"],
+        "totalRecensions": 0,
+        "totalRatings": [],
+        "finalRating": 0
     }
 
     insertedItm = userCollection.insert_one(user)

@@ -17,6 +17,9 @@ from Controllers.reservation import nsReservation
 from Controllers.tableMapController import nsTableMap
 from Controllers.productHistoryController import nsProductHistory
 from Controllers.employerChartsController import nsChartEmployee
+from Controllers.foodTypeController import nsFoodType
+from Controllers.clientController import nsClient
+
 
 app = Flask(__name__)
 CORS(app)
@@ -41,6 +44,8 @@ api.add_namespace(nsReservation)
 api.add_namespace(nsTableMap)
 api.add_namespace(nsProductHistory)
 api.add_namespace(nsChartEmployee)
+api.add_namespace(nsFoodType)
+api.add_namespace(nsClient)
 
 mongo = PyMongo(app)
 jwt = JWTManager(app)

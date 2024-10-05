@@ -23,7 +23,6 @@ def createEmployeeRepo(employerData):
         "salary": employerData["salary"],
         "birthdate": employerData["birthdate"],
         "userId": employerData["userId"],
-        "income": 0,
         "description": employerData["description"]
 
     }
@@ -37,7 +36,6 @@ def createEmployeeRepo(employerData):
         "income": 0,
         "imageUrl": "https://dreamsblob.blob.core.windows.net/profileimages/waiters-concept-illustration_114360-2908.avif",
         "adminId": employerData["userId"],
-
     }
 
     userCollection.insert_one(newEmployeracc)

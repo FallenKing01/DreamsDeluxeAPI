@@ -7,13 +7,11 @@ userPost = api.model(
     {
     "username": fields.String, 
     "password": fields.String, 
-    "role": fields.String,
     "companyName": fields.String,
     "companyAddress": fields.String,
     "companyPhone": fields.String,
-    "companyEmail": fields.String,
     "location": fields.String,
-
+    "county": fields.String,
     },
 )
 
