@@ -70,6 +70,8 @@ def getUserByEmailRepo(email):
 
         raise CustomException(404, "User not found")
 
+    user["_id"] = str(user["_id"])
+
     return user
 
 def deleteUserById(id):
