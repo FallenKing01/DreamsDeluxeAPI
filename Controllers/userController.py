@@ -86,7 +86,7 @@ class getUserByEmail(Resource):
 
     @nsUser.doc(params={"email": "User email"})
 
-    @nsUser.marshal_with(getUsers)
+    #@nsUser.marshal_with(getUsers)
 
     def get(self, email):
 
