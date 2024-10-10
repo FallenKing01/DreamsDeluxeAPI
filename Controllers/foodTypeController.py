@@ -30,15 +30,15 @@ class CreateFoodType(Resource):
 
             abort(500, "Something went wrong")
 
-@nsFoodType.route("/getfoodtypes/<string:adminId>")
+@nsFoodType.route("/getfoodtypes")
 
 class GetFoodTypes(Resource):
 
-    def get(self, adminId):
+    def get(self):
 
         try:
 
-            foodTypes = getFoodTypesRepo(adminId)
+            foodTypes = getFoodTypesRepo()
 
             return foodTypes,200
 

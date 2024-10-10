@@ -4,29 +4,20 @@ from bson import ObjectId
 
 def createFoodTypeRepo(foodType):
 
-
-    if userCollection.find_one({"_id": ObjectId(foodType["adminId"])}) is None:
-
-        raise CustomException(404, "Admin not found")
-
-
     insertedType = foodTypeCollection.insert_one(foodType)
 
     response = {
         "name" : foodType["typeName"],
-        "adminId" : foodType["adminId"],
         "id" : str(insertedType.inserted_id)
     }
 
     return response
 
-def getFoodTypesRepo(adminId):
+def getFoodTypesRepo():
 
-    if userCollection.find_one({"_id": ObjectId(adminId)}) is None:
 
-        raise CustomException(404, "Admin not found")
 
-    foodTypes = foodTypeCollection.find({"adminId": adminId})
+    foodTypes = foodTypeCollection.find()
 
     foodTypesList = []
 
