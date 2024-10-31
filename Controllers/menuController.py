@@ -93,5 +93,20 @@ class SearchProductMenu(Resource):
 
         except Exception:
             abort(500, "Something went wrong")
-        
-        
+@nsMenu.route("/updateproduct/<string:prodId>")
+class UpdateProductMenu(Resource):
+    @nsMenu.expect(productPostAdmin)
+    #method_decorators = [jwt_required()]
+    #@nsMenu.doc(security="jsonWebToken")
+    def put(self,prodId):
+
+        try:
+
+            updateProductMenuRepo(nsMenu.payload, prodId)
+            return {"Message": "Product updated successfully"}, 200
+
+        except CustomException as ce:
+            abort(ce.statusCode, ce.message)
+
+        except Exception:
+            abort(500, "Something went wrong")

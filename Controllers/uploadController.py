@@ -67,54 +67,35 @@ class UploadImageResource(Resource):
         current_image_url = user.get("imageUrl", "")
         default_image_url = "https://dreamsblob.blob.core.windows.net/profileimages/waiters-concept-illustration_114360-2908.avif"
 
-        # Use the user's ID as the blob name for the image
-        blob_name = str(user["_id"])
+        # Generate a new unique blob name (GUID) for the image
+        blob_name = str(uuid.uuid4())
 
-        # If the current image is the default image, upload a new one with the user's ID as the blob name
-        if current_image_url == default_image_url:
-            # Create a BlobClient for the new image upload
-            blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME, blob=blob_name)
-
-            # Upload the new image
-            with file.stream as file_stream:
-                content_type = get_content_type(file.filename)
-                content_settings = ContentSettings(content_type=content_type)
-                blob_client.upload_blob(data=file_stream, content_settings=content_settings)
-
-            # Construct the URL of the uploaded blob
-            blob_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{blob_name}"
-
-            # Update the user's image URL in the database
-            userCollection.update_one({"email": email}, {"$set": {"imageUrl": blob_url}})
-
-            return {'success': True, 'message': 'File uploaded successfully', 'url': blob_url}
-
-        else:
-            # If the current image is not the default one, delete it and upload a new one
+        # If the current image is not the default image, delete the old one
+        if current_image_url != default_image_url:
             try:
-                # Create a BlobClient for the current image and delete it
-                old_blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME, blob=blob_name)
-                old_blob_client.delete_blob()
-
-                # Now upload the new image (with the same name as user["_id"], overwriting the old one)
-                new_blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME, blob=blob_name)
-
-                # Upload the new image
-                with file.stream as file_stream:
-                    content_type = get_content_type(file.filename)
-                    content_settings = ContentSettings(content_type=content_type)
-                    new_blob_client.upload_blob(data=file_stream, content_settings=content_settings)
-
-                # Construct the URL of the uploaded blob
-                blob_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{blob_name}"
-
-                # Update the user's image URL in the database
-                userCollection.update_one({"email": email}, {"$set": {"imageUrl": blob_url}})
-
-                return {'success': True, 'message': 'File uploaded and old image deleted successfully', 'url': blob_url}
-
+                # Extract the old image GUID from the current image URL
+                old_image_name = current_image_url.split("/")[-1]
+                old_blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME, blob=old_image_name)
+                old_blob_client.delete_blob()  # Delete the existing image
             except Exception as e:
                 return jsonify({'success': False, 'message': f'Error deleting old image: {str(e)}'})
+
+        # Create a BlobClient for the new image upload with the new GUID
+        new_blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME, blob=blob_name)
+
+        # Upload the new image
+        with file.stream as file_stream:
+            content_type = get_content_type(file.filename)
+            content_settings = ContentSettings(content_type=content_type)
+            new_blob_client.upload_blob(data=file_stream, content_settings=content_settings)
+
+        # Construct the URL of the uploaded blob
+        blob_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{blob_name}"
+
+        # Update the user's image URL in the database
+        userCollection.update_one({"email": email}, {"$set": {"imageUrl": blob_url}})
+
+        return {'success': True, 'message': 'File uploaded successfully', 'url': blob_url}
 
 
 
@@ -163,53 +144,33 @@ class UploadImageProductResource(Resource):
         current_image_url = product.get("imageUrl", "")
         default_image_url = "https://dreamsblob.blob.core.windows.net/foodimages/noimage.jpg"
 
-        # If the current image is the default image (noimage.jpg)
-        if current_image_url == default_image_url:
-            # Generate blob name from productId
-            blob_name = productId
+        # Generate a new GUID for the new image's blob name
+        blob_name = str(uuid.uuid4())
 
-            # Create a BlobClient for the new image upload
-            blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME_FOODPICTURE, blob=blob_name)
-
-            # Use the BlobClient to upload the file to Azure Blob Storage
-            with file.stream as file_stream:
-                content_type = get_content_type(file.filename)
-                content_settings = ContentSettings(content_type=content_type)
-                blob_client.upload_blob(data=file_stream, content_settings=content_settings)
-
-            # Construct the URL of the uploaded blob
-            blob_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME_FOODPICTURE}/{blob_name}"
-
-            # Update the product with the new image URL
-            menuCollection.update_one({"_id": ObjectId(productId)}, {"$set": {"imageUrl": blob_url}})
-
-            return {'success': True, 'message': 'File uploaded successfully', 'url': blob_url}
-
-        else:
-            # If there is already an image for the product (not the default one)
-            current_image_name = current_image_url.split("/")[-1]  # Extract the filename from the URL
-
-            # Delete the old image from Blob storage
+        # If the current image is not the default image, delete the old image
+        if current_image_url != default_image_url:
             try:
-                old_blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME_FOODPICTURE, blob=current_image_name)
+                # Extract the old image GUID (last part of the URL)
+                current_image_name = current_image_url.split("/")[-1]
+                old_blob_client = blob_service_client.get_blob_client(
+                    container=CONTAINER_NAME_FOODPICTURE, blob=current_image_name)
                 old_blob_client.delete_blob()  # Delete the existing image
             except Exception as e:
                 return jsonify({'success': False, 'message': f'Error deleting old image: {str(e)}'})
 
-            # Now upload the new image with the same productId as the blob name
-            blob_name = productId  # Reusing the productId as the new blob name
-            new_blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME_FOODPICTURE, blob=blob_name)
+        # Create a BlobClient for the new image upload
+        blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME_FOODPICTURE, blob=blob_name)
 
-            # Use the BlobClient to upload the new file to Azure Blob Storage
-            with file.stream as file_stream:
-                content_type = get_content_type(file.filename)
-                content_settings = ContentSettings(content_type=content_type)
-                new_blob_client.upload_blob(data=file_stream, content_settings=content_settings)
+        # Use the BlobClient to upload the file to Azure Blob Storage
+        with file.stream as file_stream:
+            content_type = get_content_type(file.filename)
+            content_settings = ContentSettings(content_type=content_type)
+            blob_client.upload_blob(data=file_stream, content_settings=content_settings)
 
-            # Construct the URL of the uploaded new blob
-            new_blob_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME_FOODPICTURE}/{blob_name}"
+        # Construct the URL of the uploaded blob
+        blob_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME_FOODPICTURE}/{blob_name}"
 
-            # Update the product with the new image URL
-            menuCollection.update_one({"_id": ObjectId(productId)}, {"$set": {"imageUrl": new_blob_url}})
+        # Update the product with the new image URL
+        menuCollection.update_one({"_id": ObjectId(productId)}, {"$set": {"imageUrl": blob_url}})
 
-            return {'success': True, 'message': 'File uploaded and old image deleted successfully', 'url': new_blob_url}
+        return {'success': True, 'message': 'File uploaded successfully', 'url': blob_url}

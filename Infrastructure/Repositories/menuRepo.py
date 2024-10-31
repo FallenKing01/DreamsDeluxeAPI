@@ -8,14 +8,17 @@ def addProductInMenuRepo(productData,adminId):
     admin = userCollection.find_one({"_id": ObjectId(adminId)})
     if admin is None:
         raise CustomException(404, "Admin not found")
+    
     newProduct = {
         "name": productData["name"].lower(),
         "price": productData["price"],
         "type": productData["type"],
         "adminId": adminId,
         "imageUrl": "https://dreamsblob.blob.core.windows.net/foodimages/noimage.jpg",
-        "description": productData["description"]
+        "description": productData["description"],
+        "deleted": False
     }
+    
     productId = menuCollection.insert_one(newProduct).inserted_id
     newProduct["_id"] = str(productId)
 
@@ -27,7 +30,8 @@ def getProductsFromMenuRepo(adminId):
 
     if admin is None:
         raise CustomException(404, "Admin not found")
-    products = menuCollection.find({"adminId": adminId})
+    
+    products = menuCollection.find({"adminId": adminId, "deleted": False})
 
     return list(products)
 
@@ -41,11 +45,11 @@ def deleteProductFromMenuRepo(prodId):
 
     if imageUrlData != "noimage.jpg":
         deleteImageFromBlob(product["imageUrl"], "foodimages")
-        menuCollection.delete_one({"_id": ObjectId(prodId)})
+        menuCollection.update_one({"_id": ObjectId(prodId)}, {"$set": {"deleted": True}})
 
     else:
 
-        menuCollection.delete_one({"_id": ObjectId(prodId)})
+        menuCollection.update_one({"_id": ObjectId(prodId)}, {"$set": {"deleted": True}})
 
 
 def searchProductFromMenuRepo(productName):
@@ -61,3 +65,11 @@ def searchProductFromMenuRepo(productName):
         raise CustomException(404, f"No products found containing the word: {productName}")
 
     return result
+
+def updateProductMenuRepo(newProductData,productId):
+
+    product = menuCollection.find_one({"_id": ObjectId(productId)})
+    if product is None:
+        raise CustomException(404, "Product not found")
+
+    menuCollection.update_one({"_id": ObjectId(productId)}, {"$set": newProductData})

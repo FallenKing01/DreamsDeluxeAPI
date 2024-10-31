@@ -4,7 +4,7 @@ from Domain.extensions import api
 
 clientPost = api.model(
     "Client post",
-    {
+    {   "clientName": fields.String,
         "username": fields.String,
         "password": fields.String,
         "location": fields.String,

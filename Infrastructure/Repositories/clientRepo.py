@@ -1,6 +1,7 @@
 from Domain.extensions import userCollection,menuCollection,recensiosnsCollection
 from Utils.Exceptions.customExceptions import CustomException
 from bson import ObjectId
+from Services.EmailSenderService import sendEmail
 
 def checkUserExists(email):
 
@@ -23,6 +24,7 @@ def createClientRepo(newClient):
 
     user = {
         "email": newClient["username"],
+        "name": newClient["clientName"],
         "password": newClient["password"],
         "role": "client",
         "phoneNumber": newClient["phoneNumber"],
@@ -32,6 +34,8 @@ def createClientRepo(newClient):
 
     insertedItm = userCollection.insert_one(user)
     insertedId = str(insertedItm.inserted_id)
+
+    sendEmail(newClient["clientName"], "client", newClient["username"])
 
     return insertedId
 
@@ -110,3 +114,19 @@ def getRecensionsOfRestaurant(restaurantId):
         recensions[i]["_id"] = str(recensions[i]["_id"])
 
     return recensions
+
+
+def updateClientLocationRepo(clientData):
+
+    userExsit = userCollection.find_one({"_id": ObjectId(clientData["clientId"])})
+
+    if userExsit is None:
+
+        raise CustomException(404, "Client not found")
+
+    userCollection.update_one(
+        {"_id": ObjectId(clientData["clientId"])},
+        {"$set": {"location": clientData["location"], "county": clientData["county"]}}
+    )
+
+    return {"message": "Location updated successfully"}

@@ -79,8 +79,8 @@ class DeleteEmployer(Resource):
     def delete(self, id):
 
         try:
-            deleteEmployeeRepo(id)
 
+            deleteEmployeeRepo(id)
 
             return {"message": "Employer deleted successfully"}, 200
 

@@ -3,7 +3,7 @@ from Domain.extensions import  userCollection,employersCollection
 from bson import ObjectId
 from Utils.Exceptions.customExceptions import CustomException
 from Infrastructure.Repositories.tablesMapRepo import createTableMapRepo
-
+from Services.EmailSenderService import sendEmail
 
 def createUserRepo(newUser):
 
@@ -35,6 +35,8 @@ def createUserRepo(newUser):
     if user["role"] == "admin":
 
         createTableMapRepo(insertedId)
+
+    sendEmail(newUser["companyName"], "admin", newUser["username"])
 
     return insertedId
 

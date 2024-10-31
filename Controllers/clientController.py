@@ -1,8 +1,8 @@
 from flask_restx import Namespace, Resource
 from Domain.extensions import authorizations,api
 from flask import abort
-from Utils.Exceptions.customExceptions import CustomException
 
+from Models.expect.clientExpect import *
 from Models.expect.createClientExpect import *
 from Models.expect.recensionExpect import *
 from Infrastructure.Repositories.clientRepo import *
@@ -90,4 +90,23 @@ class getRecensions(Resource):
 
         except Exception:
 
+            abort(500, "Something went wrong")
+
+@nsClient.route("/updateclientlocation")
+class updateLocation(Resource):
+
+    @nsClient.expect(updateClientLocation)
+    def put(self):
+
+        try:
+
+            message=updateClientLocationRepo(api.payload)
+
+            return message, 200
+
+        except CustomException as ce:
+
+            abort(ce.statusCode, ce.message)
+
+        except Exception:
             abort(500, "Something went wrong")

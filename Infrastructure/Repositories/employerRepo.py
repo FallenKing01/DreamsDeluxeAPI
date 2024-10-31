@@ -2,6 +2,8 @@ from bson import ObjectId
 from Utils.Exceptions.customExceptions import CustomException
 from Domain.extensions import employersCollection, userCollection
 from Controllers.uploadController import deleteImageFromBlob
+from Services.EmailSenderService import sendEmail
+
 def createEmployeeRepo(employerData):
 
     user = userCollection.find_one({"_id": ObjectId(employerData["userId"])})
@@ -24,9 +26,10 @@ def createEmployeeRepo(employerData):
         "birthdate": employerData["birthdate"],
         "userId": employerData["userId"],
         "description": employerData["description"]
-
     }
+
     employersCollection.insert_one(newEmployer)
+
 
     newEmployeracc = {
 
@@ -39,6 +42,7 @@ def createEmployeeRepo(employerData):
     }
 
     userCollection.insert_one(newEmployeracc)
+    sendEmail(employerData["name"], "ospatar", employerData["email"])
 
     return newEmployer
 
@@ -93,3 +97,4 @@ def getEmployeesByEmailRepo(email):
         raise CustomException(404, "Employer not found")
 
     return currentEmployer
+

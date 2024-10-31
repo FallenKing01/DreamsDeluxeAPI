@@ -20,6 +20,7 @@ class userAPI(Resource):
     def get(self):
 
         users = list(userCollection.find())
+
         return users
 
 
@@ -29,23 +30,25 @@ class userCreate(Resource):
 
     @nsUser.expect(userPost)
     def post(self):
+
         try:
+
             insertedId=createUserRepo(api.payload)
 
             return {"User id": insertedId}, 201
 
         except CustomException as ce:
+
             abort(ce.statusCode, ce.message)
 
         except Exception:
+
             abort(500, "Something went wrong")
 
 @nsUser.route("/verifyuser/<string:email>")
 class VerifyUser(Resource):
 
     @nsUser.doc(params={"email": "User email"})
-
-
 
     def get(self, email):
 
@@ -56,8 +59,11 @@ class VerifyUser(Resource):
             return  {"message": "You can create a user with this email"}, 200
 
         except CustomException as ce:
+
             abort(ce.statusCode, ce.message)
+
         except Exception:
+
             abort(500, "Something went wrong")
 
 
