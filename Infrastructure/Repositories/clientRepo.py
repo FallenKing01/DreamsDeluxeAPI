@@ -76,22 +76,16 @@ def getProductsFromRestaurant(restaurantId):
 
 def postRecensionToRestaurant(recension):
 
-    # Insert the new recension into the recensiosnsCollection
     recensiosnsCollection.insert_one(recension)
 
-    # Fetch the current restaurant document to calculate the new final rating
     restaurant = userCollection.find_one({"_id": ObjectId(recension["restaurantId"])})
 
-    # Append the new rating to the totalRatings array
     new_total_ratings = restaurant["totalRatings"] + [recension["rating"]]
 
-    # Increment totalRecensions
     new_total_recensions = restaurant["totalRecensions"] + 1
 
-    # Calculate the new average rating (finalRating)
     final_rating = sum(new_total_ratings) / new_total_recensions
 
-    # Update the restaurant document with the new values
     updateRestaurant = userCollection.update_one(
         {"_id": ObjectId(recension["restaurantId"])},
         {
@@ -130,3 +124,17 @@ def updateClientLocationRepo(clientData):
     )
 
     return {"message": "Location updated successfully"}
+
+def getClientInfoRepo(clientId):
+
+    user = userCollection.find_one({"_id": ObjectId(clientId)})
+
+    if not user:
+
+        raise CustomException(404, "Client not found")
+
+    user["_id"] = str(user["_id"])
+    user.pop("password")
+    user.pop("role")
+
+    return user

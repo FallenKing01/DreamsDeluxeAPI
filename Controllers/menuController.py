@@ -44,6 +44,7 @@ class GetProductsMenu(Resource):
     def get(self,adminId):
 
         try:
+
               products = getProductsFromMenuRepo(adminId)
               return products, 200
 

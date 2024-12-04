@@ -9,20 +9,38 @@ from Infrastructure.Repositories.clientRepo import *
 nsClient = Namespace("client", authorizations=authorizations, description="Client operations")
 
 
-@nsClient.route("/create")
-class userCreate(Resource):
+@nsClient.route("/getclient/<string:clientId>")
+class getClient(Resource):
+    def get(self, clientId):
 
-    @nsClient.expect(clientPost)
-    def post(self):
         try:
-            insertedId=createClientRepo(api.payload)
 
-            return {"User id": insertedId}, 201
+            client = getClientInfoRepo(clientId)
+
+            return client, 200
 
         except CustomException as ce:
+
             abort(ce.statusCode, ce.message)
 
         except Exception:
+
+            abort(500, "Something went wrong")
+@nsClient.route("/getrecensions/<string:restaurantId>")
+class getRecensions(Resource):
+    def get(self,restaurantId):
+
+        try:
+            recensions = getRecensionsOfRestaurant(restaurantId)
+
+            return recensions, 200
+
+        except CustomException as ce:
+
+            abort(ce.statusCode, ce.message)
+
+        except Exception:
+
             abort(500, "Something went wrong")
 
 @nsClient.route("/getrestaurants/<string:county>/<string:location>")
@@ -42,6 +60,8 @@ class getRestaurants(Resource):
 
             abort(500, "Something went wrong")
 
+
+
 @nsClient.route("/getproducts/<string:restaurantId>")
 class getProducts(Resource):
     def get(self,restaurantId):
@@ -59,6 +79,10 @@ class getProducts(Resource):
 
             abort(500, "Something went wrong")
 
+
+
+
+
 @nsClient.route("/postrecension")
 class postRecension(Resource):
 
@@ -75,22 +99,22 @@ class postRecension(Resource):
         except Exception:
             abort(500, "Something went wrong")
 
-@nsClient.route("/getrecensions/<string:restaurantId>")
-class getRecensions(Resource):
-    def get(self,restaurantId):
+@nsClient.route("/create")
+class userCreate(Resource):
 
+    @nsClient.expect(clientPost)
+    def post(self):
         try:
-            recensions = getRecensionsOfRestaurant(restaurantId)
+            insertedId=createClientRepo(api.payload)
 
-            return recensions, 200
+            return {"User id": insertedId}, 201
 
         except CustomException as ce:
-
             abort(ce.statusCode, ce.message)
 
         except Exception:
-
             abort(500, "Something went wrong")
+
 
 @nsClient.route("/updateclientlocation")
 class updateLocation(Resource):
@@ -110,3 +134,4 @@ class updateLocation(Resource):
 
         except Exception:
             abort(500, "Something went wrong")
+
