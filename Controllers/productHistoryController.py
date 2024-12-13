@@ -49,7 +49,7 @@ class CurrentDayChart(Resource):
         except Exception:
             abort(500, "Something went wrong")
 
-@nsProductHistory.route("/currentmonthchart/<string:adminId>")
+@nsProductHistory.route("/currentmonthchart1/<string:adminId>")
 class CurrentMonthChart(Resource):
     def get(self, adminId):
 

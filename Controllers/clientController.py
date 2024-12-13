@@ -79,10 +79,6 @@ class getProducts(Resource):
 
             abort(500, "Something went wrong")
 
-
-
-
-
 @nsClient.route("/postrecension")
 class postRecension(Resource):
 

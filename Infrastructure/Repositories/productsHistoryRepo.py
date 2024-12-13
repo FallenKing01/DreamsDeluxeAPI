@@ -147,12 +147,11 @@ def currentMonthChartRepo(adminId):
     next_month = startTimestamp.replace(month=startTimestamp.month % 12 + 1, day=1, hour=0, minute=0, second=0,
                                         microsecond=0)
     endTimestamp = next_month - timedelta(microseconds=1)
-
+    print(adminId)
     pipeline = [
         {
             "$match": {
                 "adminId": adminId,
-                "timeStamp": {"$gte": startTimestamp, "$lte": endTimestamp}
             }
         },
         {
@@ -188,11 +187,19 @@ def currentMonthChartRepo(adminId):
                 "as": "productDetails"
             }
         }
+
     ]
 
     queryResult = list(productsHistoryCollection.aggregate(pipeline))
 
-    return queryResult
+    result = []
+
+    for product in queryResult:
+        product["_id"] = str(product["_id"])
+
+        result.append(product)
+
+    return result
 
 
 def dailySalesForCurrentMonth(adminId):
