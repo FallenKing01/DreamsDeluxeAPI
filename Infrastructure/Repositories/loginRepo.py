@@ -14,9 +14,11 @@ def loginRepo(accountData):
         user = userCollection.find_one({"email": username})
 
         if user is None:
+
             raise CustomException(404, "User not found")
 
         if password != user.get("password"):
+
             raise CustomException(401, "Wrong password")
 
         userData = {

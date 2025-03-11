@@ -19,7 +19,7 @@ from Controllers.productHistoryController import nsProductHistory
 from Controllers.employerChartsController import nsChartEmployee
 from Controllers.foodTypeController import nsFoodType
 from Controllers.clientController import nsClient
-
+from Controllers.regionCotroller import nsRegion
 
 app = Flask(__name__)
 CORS(app)
@@ -46,6 +46,7 @@ api.add_namespace(nsProductHistory)
 api.add_namespace(nsChartEmployee)
 api.add_namespace(nsFoodType)
 api.add_namespace(nsClient)
+api.add_namespace(nsRegion)
 
 mongo = PyMongo(app)
 jwt = JWTManager(app)

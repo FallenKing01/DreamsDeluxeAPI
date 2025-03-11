@@ -52,19 +52,6 @@ def deleteProductFromMenuRepo(prodId):
         menuCollection.update_one({"_id": ObjectId(prodId)}, {"$set": {"deleted": True}})
 
 
-def searchProductFromMenuRepo(productName):
-    # Perform a case-insensitive search on the lowercased product names
-    products = menuCollection.find({
-        "name": {"$regex": f".*{productName}.*", "$options": "i"},
-    })
-
-    # Convert MongoDB cursor to a list
-    result = list(products)
-
-    if not result:
-        raise CustomException(404, f"No products found containing the word: {productName}")
-
-    return result
 
 def updateProductMenuRepo(newProductData,productId):
 
@@ -73,3 +60,32 @@ def updateProductMenuRepo(newProductData,productId):
         raise CustomException(404, "Product not found")
 
     menuCollection.update_one({"_id": ObjectId(productId)}, {"$set": newProductData})
+
+
+def searchProductRepo(adminId, productName):
+
+        # Construct the query
+        query = {"adminId": adminId, "deleted": False}
+        query["name"] = {"$regex": f"^{productName}.*", "$options": "i"}
+
+        products = menuCollection.find(query).limit(5)
+        products_list = list(products)
+
+        if not products_list:
+            raise CustomException(404, "Product not found")
+
+        menuProducts = []
+
+        for product in products_list:
+            newProduct = {
+                "_id": str(product["_id"]),
+                "name": product["name"],
+                "price": product["price"],
+                "type": product["type"],
+                "imageUrl": product["imageUrl"],
+                "description": product["description"]
+            }
+            menuProducts.append(newProduct)
+
+        return menuProducts
+

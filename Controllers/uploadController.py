@@ -53,23 +53,18 @@ class UploadImageResource(Resource):
     def post(self, email):
         args = upload_parser.parse_args()
         file = args['file']
-
         # Check if the file is not empty and has an allowed extension
         if file.filename == '' or not allowed_file(file.filename):
             return jsonify({'success': False, 'message': 'Invalid file'})
-
         # Find the user by email
         user = userCollection.find_one({"email": email})
         if user is None:
             raise CustomException("User not found", 404)
-
         # Extract the user's current image URL
         current_image_url = user.get("imageUrl", "")
         default_image_url = "https://dreamsblob.blob.core.windows.net/profileimages/waiters-concept-illustration_114360-2908.avif"
-
         # Generate a new unique blob name (GUID) for the image
         blob_name = str(uuid.uuid4())
-
         # If the current image is not the default image, delete the old one
         if current_image_url != default_image_url:
             try:
@@ -79,19 +74,15 @@ class UploadImageResource(Resource):
                 old_blob_client.delete_blob()  # Delete the existing image
             except Exception as e:
                 return jsonify({'success': False, 'message': f'Error deleting old image: {str(e)}'})
-
         # Create a BlobClient for the new image upload with the new GUID
         new_blob_client = blob_service_client.get_blob_client(container=CONTAINER_NAME, blob=blob_name)
-
         # Upload the new image
         with file.stream as file_stream:
             content_type = get_content_type(file.filename)
             content_settings = ContentSettings(content_type=content_type)
             new_blob_client.upload_blob(data=file_stream, content_settings=content_settings)
-
         # Construct the URL of the uploaded blob
         blob_url = f"https://{ACCOUNT_NAME}.blob.core.windows.net/{CONTAINER_NAME}/{blob_name}"
-
         # Update the user's image URL in the database
         userCollection.update_one({"email": email}, {"$set": {"imageUrl": blob_url}})
 
