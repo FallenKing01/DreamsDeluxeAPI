@@ -24,17 +24,20 @@ def addProductInMenuRepo(productData,adminId):
 
     return newProduct
 
-def getProductsFromMenuRepo(adminId):
+
+def getProductsFromMenuRepo(adminId, page):
+
+    limit = 10
+    skip = (page - 1) * limit
 
     admin = userCollection.find_one({"_id": ObjectId(adminId)})
 
     if admin is None:
         raise CustomException(404, "Admin not found")
-    
-    products = menuCollection.find({"adminId": adminId, "deleted": False})
+
+    products = menuCollection.find({"adminId": adminId, "deleted": False}).skip(skip).limit(limit)
 
     return list(products)
-
 def deleteProductFromMenuRepo(prodId):
 
     product = menuCollection.find_one({"_id": ObjectId(prodId)})
@@ -62,7 +65,7 @@ def updateProductMenuRepo(newProductData,productId):
     menuCollection.update_one({"_id": ObjectId(productId)}, {"$set": newProductData})
 
 
-def searchProductRepo(adminId, productName):
+def searchProductInMenuRepo(adminId, productName):
 
         # Construct the query
         query = {"adminId": adminId, "deleted": False}

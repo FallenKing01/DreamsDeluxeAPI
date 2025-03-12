@@ -35,17 +35,17 @@ class AddProductToMenu(Resource):
         except Exception:
             abort(500, "Something went wrong")
 
-@nsMenu.route("/getproducts/<string:adminId>")
+@nsMenu.route("/getproducts/<string:adminId>/<int:page>")
 class GetProductsMenu(Resource):
     #method_decorators = [jwt_required()]
     #@nsMenu.doc(security="jsonWebToken")
     @nsMenu.marshal_with(productAddAdmin)
     @nsMenu.doc(params={"adminId": "Admin ID"})
-    def get(self,adminId):
+    def get(self,adminId, page):
 
         try:
 
-              products = getProductsFromMenuRepo(adminId)
+              products = getProductsFromMenuRepo(adminId, page)
               return products, 200
 
         except CustomException as ce:
@@ -90,7 +90,7 @@ class UpdateProductMenu(Resource):
         except Exception:
             abort(500, "Something went wrong")
 
-@nsMenu.route("/searchproduct/<string:adminId>/<string:productName>")
+@nsMenu.route("/searchproduct/<string:adminId>/<string:productName>/<int:page>")
 class SearchProductMenu(Resource):
     #method_decorators = [jwt_required()]
     #@nsMenu.doc(security="jsonWebToken")
@@ -100,7 +100,7 @@ class SearchProductMenu(Resource):
 
         try:
 
-            products = searchProductRepo(adminId, productName)
+            products = searchProductInMenuRepo(adminId, productName)
             return products, 200
 
         except CustomException as ce:

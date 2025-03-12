@@ -141,3 +141,82 @@ https://bistroandbizz.com
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
+
+
+def sendResetPasswordEmail(userName, email, reset_code):
+    sender_email = "lunabistrobizzchatbot1@gmail.com"
+    receiver_email = email
+    password = "rkfs bzmp cayq rvnd"
+
+    # Email content with HTML formatting
+    subject = "Password Reset Code for Your Bistro&Bizz Account"
+    body = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333;">
+        <p>Hi {userName},</p>
+        <p>We received a request to reset your password. Use the following code to reset your password:</p>
+        <div style="text-align: center; margin: 20px 0;">
+            <span style="display: inline-block; background-color: black; color: white; 
+                        padding: 15px 25px; font-size: 24px; font-weight: bold; 
+                        border-radius: 5px;">
+                {reset_code}
+            </span>
+        </div>
+        <p>If you did not request this change, you can ignore this email.</p>
+        <p>Best,</p>
+        <p><strong>Bistro&Bizz Support Team</strong></p>
+    </body>
+    </html>
+    """
+
+    # Create email message
+    message = MIMEMultipart()
+    message["Subject"] = subject
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    message.attach(MIMEText(body, "html"))  # Set content type to HTML
+
+    # Send the email
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+        print("Password reset email sent successfully!")
+    except Exception as e:
+        print("Failed to send email:", str(e))
+
+def sendPasswordResetConfirmationEmail(email):
+    sender_email = "lunabistrobizzchatbot1@gmail.com"
+    receiver_email = email
+    password = "rkfs bzmp cayq rvnd"
+
+    # Email content with HTML formatting
+    subject = "Your Bistro&Bizz Password Has Been Reset"
+    body = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333;">
+        <p>Dear user,</p>
+        <p>Your password has been successfully reset. You can now log in to your Bistro&Bizz account using your new password.</p>
+        <p>If you did not request this password change, please contact our support team immediately.</p>
+        <p>For security reasons, never share your password with anyone.</p>
+        <p>Best,</p>
+        <p><strong>Bistro&Bizz Support Team</strong></p>
+    </body>
+    </html>
+    """
+
+    # Create email message
+    message = MIMEMultipart()
+    message["Subject"] = subject
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    message.attach(MIMEText(body, "html"))  # Set content type to HTML
+
+    # Send the email
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+        print("Password reset confirmation email sent successfully!")
+    except Exception as e:
+        print("Failed to send email:", str(e))

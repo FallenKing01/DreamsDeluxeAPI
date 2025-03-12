@@ -37,9 +37,12 @@ def createTableRepo(tableData,userId):
 
     return insTableId
 
-def getTablesOfUserRepo(id):
 
-    tables = list(tablesCollection.find({"userId": id}))
+def getTablesOfUserRepo(id, page=1):
+    limit = 9
+    skip = (page - 1) * limit
+
+    tables = list(tablesCollection.find({"userId": id}).sort([("name", 1)]).skip(skip).limit(limit))
 
     if not tables:
         raise CustomException(404, "Tables not found")
@@ -49,20 +52,22 @@ def getTablesOfUserRepo(id):
 
         products = list(productsCollection.find({"tableId": str(table_id)}))
 
-        formatted_products = []
+        formated_products = []
 
         for product in products:
-            formatted_product = {
+
+            currentProduct = {
                 "id": str(product["_id"]),
                 "name": product["name"],
                 "price": product["price"],
-                "qty": product["qty"],
+                "qty": product["qty"]
             }
-            formatted_products.append(formatted_product)
+            formated_products.append(currentProduct)
 
-        table["products"] = formatted_products
+        table["products"] = formated_products
 
     return tables
+
 
 def getDetailsTableRepo(id):
     table = tablesCollection.find_one({"_id": ObjectId(id)})
@@ -139,5 +144,38 @@ def resetTableDataRepo(id):
 
     # Delete products associated with the table
     productsCollection.delete_many({"tableId": id})
+
+
+def searchTableRepo(adminId, tableName):
+    query = {"userId": adminId}
+    response = []
+
+    if tableName:
+        # First, prioritize tables that start with the given tableName
+        query["name"] = {"$regex": f"^{tableName}.*", "$options": "i"}
+        tables = list(tablesCollection.find(query).limit(5))
+    else:
+        tables = list(tablesCollection.find(query).limit(5))
+
+    if not tables:
+        raise CustomException(404, "Table not found")
+
+    # Remove 'products' key from each table in the result
+    for table in tables:
+        tableToAppend =  {
+            "id": str(table["_id"]),
+            "name": table["name"],
+            "capacity": table["capacity"],
+            "billValue": table["billValue"],
+            "products": []
+        }
+
+        response.append(tableToAppend)
+
+    return response
+
+
+
+
 
 

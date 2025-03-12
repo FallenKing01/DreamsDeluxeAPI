@@ -37,16 +37,16 @@ class TableAPI(Resource):
         except Exception:
             abort(500, "Something went wrong")
 
-@nsTables.route("/gettables/<string:id>")
+@nsTables.route("/gettables/<string:id>/<int:page>")
 class GetTables(Resource):
-    method_decorators = [jwt_required()]
+   # method_decorators = [jwt_required()]
 
     @nsTables.doc(security="jsonWebToken")
     @nsTables.doc(params={"id": "User ID"})
     @nsTables.marshal_list_with(tableget)
-    def get(self, id):
+    def get(self, id, page):
         try:
-            tables = getTablesOfUserRepo(id)
+            tables = getTablesOfUserRepo(id,page)
 
             return tables, 200
         except CustomException as ce:(
@@ -105,3 +105,18 @@ class ResetTable(Resource):
                 abort(ce.statusCode, ce.message)
             except Exception:
                 abort(500, "Something went wrong")
+
+@nsTables.route("/search/<string:adminId>/<string:tableName>")
+class SearchTable(Resource):
+    #method_decorators = [jwt_required()]
+
+    #@nsTables.doc(security="jsonWebToken")
+    @nsTables.doc(params={"adminId": "Admin ID", "tableName": "Table Name"})
+    def get(self, adminId, tableName):
+        try:
+            tables = searchTableRepo(adminId, tableName)
+            return tables, 200
+        except CustomException as ce:
+            abort(ce.statusCode, ce.message)
+        except Exception:
+            abort(500, "Something went wrong")
