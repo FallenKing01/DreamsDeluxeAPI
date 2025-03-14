@@ -66,7 +66,7 @@ def getProductsFromRestaurant(restaurantId):
 
         raise CustomException(404, "Restaurant not found")
 
-    products = list(menuCollection.find({"adminId": restaurantId}))
+    products = list(menuCollection.find({"adminId": restaurantId,"deleted":False}))
 
     for i in range(len(products)):
 
