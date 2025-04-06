@@ -152,6 +152,10 @@ def currentMonthChartRepo(adminId):
         {
             "$match": {
                 "adminId": adminId,
+                "timeStamp": {
+                    "$gte": startTimestamp,  # datetime.datetime object
+                    "$lte": next_month
+                }
             }
         },
         {
@@ -162,13 +166,13 @@ def currentMonthChartRepo(adminId):
         },
         {
             "$sort": {
-                "qtySum": -1  # Sort by qtySum in descending order
+                "qtySum": -1
             }
         },
         {
             "$lookup": {
                 "from": "menu",
-                'let': {"searchId": {"$toString": "$_id"}},
+                "let": {"searchId": {"$toString": "$_id"}},
                 "pipeline": [
                     {
                         "$match": {
@@ -180,14 +184,13 @@ def currentMonthChartRepo(adminId):
                     {
                         "$project": {
                             "_id": 0,
-                            "adminId": 0,
+                            "adminId": 0
                         }
                     }
                 ],
                 "as": "productDetails"
             }
         }
-
     ]
 
     queryResult = list(productsHistoryCollection.aggregate(pipeline))
