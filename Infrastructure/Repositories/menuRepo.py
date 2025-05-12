@@ -66,29 +66,28 @@ def updateProductMenuRepo(newProductData,productId):
 
 
 def searchProductInMenuRepo(adminId, productName):
+    query = {"adminId": adminId, "deleted": False}
+    query["name"] = {"$regex": productName, "$options": "i"}  # Match anywhere, case-insensitive
 
-        # Construct the query
-        query = {"adminId": adminId, "deleted": False}
-        query["name"] = {"$regex": f"^{productName}.*", "$options": "i"}
+    products = menuCollection.find(query).limit(5)
+    products_list = list(products)
 
-        products = menuCollection.find(query).limit(5)
-        products_list = list(products)
+    if not products_list:
+        raise CustomException(404, "Product not found")
 
-        if not products_list:
-            raise CustomException(404, "Product not found")
+    menuProducts = []
 
-        menuProducts = []
+    for product in products_list:
+        newProduct = {
+            "_id": str(product["_id"]),
+            "name": product["name"],
+            "price": product["price"],
+            "type": product["type"],
+            "imageUrl": product["imageUrl"],
+            "description": product["description"]
+        }
+        menuProducts.append(newProduct)
 
-        for product in products_list:
-            newProduct = {
-                "_id": str(product["_id"]),
-                "name": product["name"],
-                "price": product["price"],
-                "type": product["type"],
-                "imageUrl": product["imageUrl"],
-                "description": product["description"]
-            }
-            menuProducts.append(newProduct)
+    return menuProducts
 
-        return menuProducts
 
