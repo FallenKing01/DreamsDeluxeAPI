@@ -90,7 +90,7 @@ class UpdateProductMenu(Resource):
         except Exception:
             abort(500, "Something went wrong")
 
-@nsMenu.route("/searchproduct/<string:adminId>/<string:productName>/<int:page>")
+@nsMenu.route("/searchproduct/<string:adminId>/<string:productName>")
 class SearchProductMenu(Resource):
     #method_decorators = [jwt_required()]
     #@nsMenu.doc(security="jsonWebToken")
