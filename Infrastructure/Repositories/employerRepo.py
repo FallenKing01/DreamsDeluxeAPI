@@ -3,6 +3,10 @@ from Utils.Exceptions.customExceptions import CustomException
 from Domain.extensions import employersCollection, userCollection
 from Controllers.uploadController import deleteImageFromBlob
 from Services.EmailSenderService import sendEmail
+import bcrypt
+from Domain.extensions import salt
+def hash_password(password):
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 def createEmployeeRepo(employerData):
 
@@ -16,11 +20,13 @@ def createEmployeeRepo(employerData):
 
         raise  CustomException(400, "The email is already used")
 
+    hash_pass = hash_password(employerData["password"])
+
     newEmployer = {
 
         "name": employerData["name"],
         "email": employerData["email"],
-        "password": employerData["password"],
+        "password": hash_pass,
         "role": employerData["role"],
         "salary": employerData["salary"],
         "birthdate": employerData["birthdate"],

@@ -2,9 +2,11 @@ from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 from flask_restx import Api
 from pymongo import MongoClient
+import bcrypt
 
 api = Api()
 jwt = JWTManager()
+salt = bcrypt.gensalt()
 
 authorizations = {
     "jsonWebToken": {"type": "apiKey", "in": "header", "name": "Authorization"}

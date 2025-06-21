@@ -2,6 +2,10 @@ from Domain.extensions import userCollection,menuCollection,recensiosnsCollectio
 from Utils.Exceptions.customExceptions import CustomException
 from bson import ObjectId
 from Services.EmailSenderService import sendEmail
+import bcrypt
+from Domain.extensions import salt
+def hash_password(password):
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 def checkUserExists(email):
 
@@ -17,15 +21,16 @@ def checkUserExists(email):
 
 
 def createClientRepo(newClient):
-
     if checkUserExists(newClient["username"]):
-
         raise CustomException(409, "User with this email already exists")
 
+    hashed_password = hash_password(newClient["password"])
+
+    print(hashed_password +'!!!!!!!!!!!!!!!!')
     user = {
         "email": newClient["username"],
         "name": newClient["clientName"],
-        "password": newClient["password"],
+        "password": hashed_password,
         "role": "client",
         "phoneNumber": newClient["phoneNumber"],
         "location": newClient["location"],

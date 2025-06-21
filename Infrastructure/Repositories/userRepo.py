@@ -4,6 +4,11 @@ from bson import ObjectId
 from Utils.Exceptions.customExceptions import CustomException
 from Infrastructure.Repositories.tablesMapRepo import createTableMapRepo
 from Services.EmailSenderService import sendEmail
+import bcrypt
+from Domain.extensions import salt
+def hash_password(password):
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+
 
 def createUserRepo(newUser):
 
@@ -13,10 +18,12 @@ def createUserRepo(newUser):
 
         raise CustomException(409, "User with this email already exists")
 
+    hashed_password = hash_password(newUser["password"])
+
     user = {
 
         "email": newUser["username"],
-        "password": newUser["password"],
+        "password": hashed_password,
         "role": "admin",
         "totalAmount": 0,
         "companyName": newUser["companyName"],
