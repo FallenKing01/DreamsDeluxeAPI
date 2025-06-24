@@ -40,7 +40,7 @@ def createEmployeeRepo(employerData):
     newEmployeracc = {
 
         "email": employerData["email"],
-        "password": employerData["password"],
+        "password": hash_pass,
         "role": employerData["role"],
         "income": 0,
         "imageUrl": "https://dreamsblob.blob.core.windows.net/profileimages/waiters-concept-illustration_114360-2908.avif",

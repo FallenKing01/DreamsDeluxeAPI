@@ -67,4 +67,4 @@ def user_lookup_callback(jwt_header, jwt_data):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
