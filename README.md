@@ -45,13 +45,13 @@ An **API for solving operational problems in restaurants and monitoring employee
 ## 📁 Related Projects
 
 ### 🧩 [SyncSquad Backend](https://github.com/FallenKing01/SyncSquadBackend)
-A class-based backend for managing team tasks and productivity.
+A class-based backend for managing exams programming.
 
 ### 🖼️ [Omnipix Backend](https://github.com/FallenKing01/Omnipix-Backend)
-A project used on a contest awarded with 29 points out of 30
+A project used on a contest awarded with 29 points out of 30.
 
 ### 🌙 [LunaAI](https://github.com/FallenKing01/lunaAI/blob/main/app.py)
-An async Flask app that interacts with a database efficiently using asynchronous programming principles.
+An async FastAPI app that interacts with a database efficiently using asynchronous programming principles.
 
 ---
 
